@@ -46,6 +46,7 @@ namespace ToDoList
             this.status_str = new System.Windows.Forms.StatusStrip();
             this.listName_txt = new System.Windows.Forms.ToolStripStatusLabel();
             this.totalItems_txt = new System.Windows.Forms.ToolStripStatusLabel();
+            this.currentSelectionStats_txt = new System.Windows.Forms.ToolStripStatusLabel();
             this.menuStrip2 = new System.Windows.Forms.MenuStrip();
             this.fileToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.newToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
@@ -82,8 +83,9 @@ namespace ToDoList
             this.toolStripSeparator5 = new System.Windows.Forms.ToolStripSeparator();
             this.reportBugToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.checkForUpdatesToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.currentSelectionStats_txt = new System.Windows.Forms.ToolStripStatusLabel();
             this.todolist_lst = new SIL.FieldWorks.Common.Controls.TriStateTreeView();
+            this.copyCurrentItemToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.copyCurrentItemToolStripMenuItem1 = new System.Windows.Forms.ToolStripMenuItem();
             this.menuStrip1.SuspendLayout();
             this.status_str.SuspendLayout();
             this.menuStrip2.SuspendLayout();
@@ -99,8 +101,9 @@ namespace ToDoList
             this.deleteCurrentItemToolStripMenuItem,
             this.moveItemUpMainStrip,
             this.moveItemDownMainStrip,
-            this.toggleExpandAllItemsToolStripMenuItem1,
-            this.unselectCurrentItemToolStripMenuItem});
+            this.copyCurrentItemToolStripMenuItem,
+            this.unselectCurrentItemToolStripMenuItem,
+            this.toggleExpandAllItemsToolStripMenuItem1});
             this.menuStrip1.Location = new System.Drawing.Point(0, 24);
             this.menuStrip1.Name = "menuStrip1";
             this.menuStrip1.Size = new System.Drawing.Size(1271, 27);
@@ -194,6 +197,12 @@ namespace ToDoList
             this.totalItems_txt.Name = "totalItems_txt";
             this.totalItems_txt.Size = new System.Drawing.Size(49, 19);
             this.totalItems_txt.Text = "0 items";
+            // 
+            // currentSelectionStats_txt
+            // 
+            this.currentSelectionStats_txt.Name = "currentSelectionStats_txt";
+            this.currentSelectionStats_txt.Size = new System.Drawing.Size(45, 19);
+            this.currentSelectionStats_txt.Text = "0 items";
             // 
             // menuStrip2
             // 
@@ -298,7 +307,8 @@ namespace ToDoList
             this.addNewItemToolStripMenuItem,
             this.addNewChildItemToolStripMenuItem1,
             this.editCurrentItemToolStripMenuItem,
-            this.deleteCurrentItemToolStripMenuItem1});
+            this.deleteCurrentItemToolStripMenuItem1,
+            this.copyCurrentItemToolStripMenuItem1});
             this.editToolStripMenuItem.Name = "editToolStripMenuItem";
             this.editToolStripMenuItem.Size = new System.Drawing.Size(39, 20);
             this.editToolStripMenuItem.Text = "Edit";
@@ -468,12 +478,6 @@ namespace ToDoList
             this.checkForUpdatesToolStripMenuItem.Text = "Check for Updates";
             this.checkForUpdatesToolStripMenuItem.Click += new System.EventHandler(this.checkForUpdatesToolStripMenuItem_Click);
             // 
-            // currentSelectionStats_txt
-            // 
-            this.currentSelectionStats_txt.Name = "currentSelectionStats_txt";
-            this.currentSelectionStats_txt.Size = new System.Drawing.Size(45, 19);
-            this.currentSelectionStats_txt.Text = "0 items";
-            // 
             // todolist_lst
             // 
             this.todolist_lst.Dock = System.Windows.Forms.DockStyle.Fill;
@@ -485,6 +489,20 @@ namespace ToDoList
             this.todolist_lst.Size = new System.Drawing.Size(1271, 497);
             this.todolist_lst.TabIndex = 1;
             this.todolist_lst.AfterCheck += new System.Windows.Forms.TreeViewEventHandler(this.itemChecked_AfterCheck);
+            // 
+            // copyCurrentItemToolStripMenuItem
+            // 
+            this.copyCurrentItemToolStripMenuItem.Name = "copyCurrentItemToolStripMenuItem";
+            this.copyCurrentItemToolStripMenuItem.Size = new System.Drawing.Size(117, 23);
+            this.copyCurrentItemToolStripMenuItem.Text = "Copy Current Item";
+            this.copyCurrentItemToolStripMenuItem.Click += new System.EventHandler(this.copyCurrentItemToolStripMenuItem_Click);
+            // 
+            // copyCurrentItemToolStripMenuItem1
+            // 
+            this.copyCurrentItemToolStripMenuItem1.Name = "copyCurrentItemToolStripMenuItem1";
+            this.copyCurrentItemToolStripMenuItem1.Size = new System.Drawing.Size(213, 22);
+            this.copyCurrentItemToolStripMenuItem1.Text = "Copy Current Item";
+            this.copyCurrentItemToolStripMenuItem1.Click += new System.EventHandler(this.copyCurrentItemToolStripMenuItem1_Click);
             // 
             // ToDoList
             // 
@@ -563,6 +581,8 @@ namespace ToDoList
         private ToolStripMenuItem unselectCurrentSelectedItemToolStripMenuItem;
         private ToolStripMenuItem unselectCurrentItemToolStripMenuItem;
         private ToolStripStatusLabel currentSelectionStats_txt;
+        private ToolStripMenuItem copyCurrentItemToolStripMenuItem;
+        private ToolStripMenuItem copyCurrentItemToolStripMenuItem1;
     }
 }
 

@@ -176,6 +176,7 @@ namespace ToDoList
         {
             if (string.IsNullOrWhiteSpace(inputText_txt.Text))
             {
+                this.ActiveControl = null;
                 output = Interaction.InputBox(prompt, title, defaultResponse);
             }
             else
@@ -210,10 +211,16 @@ namespace ToDoList
 
         public TreeNode CopyNode(TreeNode oldNode)
         {
-            return new TreeNode(oldNode.Text)
+            var node = new TreeNode(oldNode.Text)
             {
                 Checked = oldNode.Checked
             };
+            for (var i = 0; i < oldNode.Nodes.Count; i++)
+            {
+                node.Nodes.Add(CopyNode(oldNode.Nodes[i]));
+            }
+
+            return node;
         }
 
         public void ChangeItemState(TreeNode node, bool? newState)
@@ -228,6 +235,7 @@ namespace ToDoList
 
         private string GetNewFileName()
         {
+            this.ActiveControl = null;
             _openDialog.MarkChecked();
             var saveFileName = new SaveFileDialog();
             saveFileName.Filter = Constants.SupportedFileTypes;
@@ -260,6 +268,7 @@ namespace ToDoList
                 File.WriteAllText(_filePath, output);
                 Singleton.Instance.SaveGuard.Reset();
             }
+            RefreshAndSave();
         }
 
         public void Open(string file)
@@ -366,6 +375,7 @@ namespace ToDoList
 
         private void openListToolStripMenuItem_Click(object sender, EventArgs e)
         {
+            this.ActiveControl = null;
             _openDialog.MarkChecked();
             var openDialog = new OpenFileDialog
             {
@@ -505,6 +515,7 @@ namespace ToDoList
 
         private void aboutToolStripMenuItem_Click(object sender, EventArgs e)
         {
+            this.ActiveControl = null;
             _openDialog.MarkChecked();
             var about = new AboutBox();
             about.ShowDialog();
@@ -519,6 +530,7 @@ namespace ToDoList
             }
             catch
             {
+                this.ActiveControl = null;
                 _openDialog.MarkChecked();
                 Interaction.MsgBox($"Please go to {Constants.IssueAndFeatureRequestPage} to file a bug or request a new feature!");
                 _openDialog.Reset();
@@ -747,6 +759,28 @@ namespace ToDoList
         private void unselectCurrentItemToolStripMenuItem_Click(object sender, EventArgs e)
         {
             unselectCurrentSelectedItemToolStripMenuItem_Click(sender, e);
+        }
+
+        private void copyCurrentItemToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            if (todolist_lst.SelectedNode != null && GetInput("New Item Text", "Copy Item", todolist_lst.SelectedNode.Text, out var newItem))
+            {
+                var newNode = CopyNode(todolist_lst.SelectedNode);
+                newNode.Text = newItem;
+                var nodes = todolist_lst.SelectedNode.Parent == null
+                    ? todolist_lst.Nodes
+                    : todolist_lst.SelectedNode.Parent.Nodes;
+                nodes.Add(newNode);
+
+                _countDirty.MarkChecked();
+                _save.MarkChecked();
+                RefreshAndSave();
+            }
+        }
+
+        private void copyCurrentItemToolStripMenuItem1_Click(object sender, EventArgs e)
+        {
+            copyCurrentItemToolStripMenuItem_Click(sender, e);
         }
     }
 }
