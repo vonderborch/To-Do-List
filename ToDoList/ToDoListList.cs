@@ -1,31 +1,25 @@
-﻿using System.Collections.Generic;
-
-namespace ToDoList
+﻿namespace ToDoList
 {
     public class ToDoListList
     {
         public string Name;
 
-        public List<ToDoListItem> Items;
-
-        public bool ShowCompletedItems;
-
-        public bool ShowIncompleteItems;
-
         public bool AutoSave;
 
         public bool WindowOnTop;
 
+        public bool ExpandAll;
+
         public int SaveFileVersion = Constants.SaveFileVersion;
+
+        public string ItemsJson;
 
         public ToDoListList(string name = "")
         {
             Name = name;
-            Items = new List<ToDoListItem>();
-            ShowCompletedItems = true;
-            ShowIncompleteItems = true;
             AutoSave = false;
             WindowOnTop = false;
+            ExpandAll = true;
         }
     }
 }

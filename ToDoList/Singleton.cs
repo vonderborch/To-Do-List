@@ -1,5 +1,5 @@
-﻿using System.Collections.Generic;
-using Octokit;
+﻿using Octokit;
+using Velentr.Miscellaneous;
 
 namespace ToDoList
 {
@@ -9,17 +9,15 @@ namespace ToDoList
 
         static Singleton()
         {
-
         }
 
         private Singleton()
         {
-            
         }
 
         public static Singleton Instance => _instance;
 
-        public List<string> OpenFiles { get; set; } = new List<string>();
+        public Guard SaveGuard = new Guard();
 
         public GitHubClient Client => new GitHubClient(new ProductHeaderValue(Constants.AppHeaderName));
     }
