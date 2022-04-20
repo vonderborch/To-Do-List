@@ -1,7 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.IO;
 using System.Linq;
+using System.Reflection;
 using System.Windows.Forms;
 using Microsoft.VisualBasic;
 using Newtonsoft.Json;
@@ -31,13 +33,13 @@ namespace ToDoList
             _list = new ToDoListList();
             _filePath = file;
             Open(file);
-            RefreshListBox();
         }
 
         private void Open(string file)
         {
             var input = File.ReadAllText(file);
             _list = JsonConvert.DeserializeObject<ToDoListList>(input);
+            RefreshListBox();
         }
 
         private void aboutToolStripMenuItem_Click(object sender, EventArgs e)
@@ -119,6 +121,7 @@ namespace ToDoList
             hideUncompletedItemsToolStripMenuItem.Checked = _list.ShowIncompleteItems;
 
             todolist_lst.Items.Clear();
+            _itemIndex.Clear();
             for (var i = 0; i < _list.Items.Count; i++)
             {
                 if ((_list.ShowCompletedItems && _list.Items[i].Completed) || (_list.ShowIncompleteItems && !_list.Items[i].Completed))
@@ -189,11 +192,18 @@ namespace ToDoList
             openDialog.Multiselect = true;
             openDialog.ShowDialog();
 
-            for (var i = 0; i < openDialog.FileNames.Length; i++)
+            if (openDialog.FileNames.Length == 1 && _list.Items.Count == 0 && string.IsNullOrWhiteSpace(_list.Name))
             {
-                if (!Singleton.Instance.OpenFiles.Contains(openDialog.FileNames[i]))
+                Open(openDialog.FileNames[0]);
+            }
+            else
+            {
+                for (var i = 0; i < openDialog.FileNames.Length; i++)
                 {
-                    OpenNewWindow(openDialog.FileNames[i]);
+                    if (!Singleton.Instance.OpenFiles.Contains(openDialog.FileNames[i]))
+                    {
+                        OpenNewWindow(openDialog.FileNames[i]);
+                    }
                 }
             }
         }
@@ -217,33 +227,32 @@ namespace ToDoList
                 _filePath = oldPath;
                 _list.Name = oldName;
             }
+            else
+            {
+                RefreshListBox();
+            }
         }
 
         private void OpenNewWindow(string file)
         {
-            var newWindow = new ToDoList(file);
-            newWindow.Show();
-            Singleton.Instance.OpenFiles.Add(file);
+            Process.Start(Assembly.GetEntryAssembly().Location, file);
         }
 
         private void Save()
         {
-            if (_list.Items.Count > 0)
+            if (string.IsNullOrWhiteSpace(_list.Name))
             {
-                if (string.IsNullOrWhiteSpace(_list.Name))
-                {
-                    _filePath = GetNewFileName();
-                    var name = Path.GetFileNameWithoutExtension(_filePath);
+                _filePath = GetNewFileName();
+                var name = Path.GetFileNameWithoutExtension(_filePath);
 
-                    _list.Name = name;
-                    _list.AutoSave = true;
-                }
+                _list.Name = name;
+                _list.AutoSave = true;
+            }
 
-                if (!string.IsNullOrWhiteSpace(_filePath))
-                {
-                    var output = JsonConvert.SerializeObject(_list);
-                    File.WriteAllText(_filePath, output);
-                }
+            if (!string.IsNullOrWhiteSpace(_filePath))
+            {
+                var output = JsonConvert.SerializeObject(_list);
+                File.WriteAllText(_filePath, output);
             }
         }
 
@@ -259,6 +268,145 @@ namespace ToDoList
         {
             _list.WindowOnTop = !_list.WindowOnTop;
             RefreshListBox();
+        }
+
+        private void reportBugToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            try
+            {
+                Process.Start(Constants.IssueAndFeatureRequestPage);
+            }
+            catch
+            {
+                Interaction.MsgBox($"Please go to {Constants.IssueAndFeatureRequestPage} to file a bug or request a new feature!");
+            }
+        }
+
+        private void checkForUpdatesToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            var latestReleaseTask = Singleton.Instance.Client.Repository.Release.GetLatest(Constants.GithubOwner, Constants.GithubRepo);
+            if (latestReleaseTask.Wait(10000))
+            {
+                var result = latestReleaseTask.Result;
+                if (Version.TryParse(result.Name, out var latestVersion))
+                {
+                    if (latestVersion > Assembly.GetEntryAssembly().GetName().Version)
+                    {
+                        try
+                        {
+                            Interaction.MsgBox("A new version is available!");
+                            Process.Start(Constants.NewVersionPage);
+                        }
+                        catch
+                        {
+                            Interaction.MsgBox($"Please go to {Constants.IssueAndFeatureRequestPage} to download the latest version!");
+                        }
+                    }
+                    else
+                    {
+                        Interaction.MsgBox("You are running the latest version!");
+                    }
+                }
+                else
+                {
+                    Interaction.MsgBox($"Latest version can't be parsed, please go to {Constants.NewVersionPage} to check the version!", MsgBoxStyle.Critical);
+                }
+
+
+            }
+            else
+            {
+                Interaction.MsgBox("Timed out while trying to get latest release!", MsgBoxStyle.Critical);
+            }
+        }
+
+        private void moveCurrentItemUpToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            if (todolist_lst.SelectedIndex > -1)
+            {
+                var selectedIndex = todolist_lst.SelectedIndex;
+                var actualIndex = _itemIndex[selectedIndex];
+                if (actualIndex > 0 && todolist_lst.SelectedIndex > 0)
+                {
+                    var actualAboveIndex = _itemIndex[selectedIndex - 1];
+                    SwapItems(actualAboveIndex, actualIndex);
+                    todolist_lst.SelectedIndex = selectedIndex - 1;
+                }
+            }
+        }
+
+        private void SwapItems(int indexA, int indexB)
+        {
+            (_list.Items[indexA], _list.Items[indexB]) = (_list.Items[indexB], _list.Items[indexA]);
+            RefreshListBox();
+        }
+
+        private void moveCurrentItemDownToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            if (todolist_lst.SelectedIndex > -1)
+            {
+                var selectedIndex = todolist_lst.SelectedIndex;
+                var actualIndex = _itemIndex[selectedIndex];
+                if (actualIndex < _list.Items.Count - 1)
+                {
+                    var actualBelowIndex = _itemIndex[selectedIndex + 1];
+                    SwapItems(actualBelowIndex, actualIndex);
+                    todolist_lst.SelectedIndex = selectedIndex + 1;
+                }
+            }
+        }
+
+        private void editCurrentItemToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            if (todolist_lst.SelectedIndex > -1)
+            {
+                var result = Interaction.InputBox("New Text", "Edit Item", todolist_lst.SelectedItem.ToString());
+                if (!string.IsNullOrWhiteSpace(result))
+                {
+                    var actualIndex = _itemIndex[todolist_lst.SelectedIndex];
+                    _list.Items[actualIndex].Text = result;
+                    RefreshListBox();
+                }
+            }
+        }
+
+        private void toolStripMenuItem1_Click(object sender, EventArgs e)
+        {
+            editCurrentItemToolStripMenuItem_Click(sender, e);
+        }
+
+        private void addNewItemToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            addItemToolStripMenuItem_Click(sender, e);
+        }
+
+        private void deleteCurrentItemToolStripMenuItem1_Click(object sender, EventArgs e)
+        {
+            deleteCurrentItemToolStripMenuItem_Click(sender, e);
+        }
+
+        private void todolist_lst_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            if (todolist_lst.SelectedIndex > -1)
+            {
+                var actualIndex = _itemIndex[todolist_lst.SelectedIndex];
+                var newState = todolist_lst.GetItemChecked(todolist_lst.SelectedIndex);
+                if (_list.Items[actualIndex].Completed != newState)
+                {
+                    _list.Items[actualIndex].Completed = newState;
+                    RefreshListBox();
+                }
+            }
+        }
+
+        private void toolStripMenuItem2_Click(object sender, EventArgs e)
+        {
+            moveCurrentItemUpToolStripMenuItem_Click(sender, e);
+        }
+
+        private void toolStripMenuItem3_Click(object sender, EventArgs e)
+        {
+            moveCurrentItemDownToolStripMenuItem_Click(sender, e);
         }
     }
 }

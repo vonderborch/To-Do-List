@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using Octokit;
 
 namespace ToDoList
 {
@@ -19,5 +20,7 @@ namespace ToDoList
         public static Singleton Instance => _instance;
 
         public List<string> OpenFiles { get; set; } = new List<string>();
+
+        public GitHubClient Client => new GitHubClient(new ProductHeaderValue(Constants.AppHeaderName));
     }
 }
