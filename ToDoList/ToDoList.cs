@@ -4,9 +4,11 @@ using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
+using System.Linq;
 using System.Reflection;
 using System.Threading;
 using System.Windows.Forms;
+using SIL.FieldWorks.Common.Controls;
 using Velentr.Miscellaneous;
 
 namespace ToDoList
@@ -18,6 +20,9 @@ namespace ToDoList
         private string _filePath = "";
 
         public Guard _countDirty = new Guard();
+        public Guard _save = new Guard();
+        public Guard _firstLoad = new Guard();
+        public Guard _openDialog = new Guard();
 
         public ToDoList()
         {
@@ -41,6 +46,12 @@ namespace ToDoList
             _countDirty.MarkChecked();
             this.inputText_txt.KeyUp += InputText_txtOnKeyUp;
             this.todolist_lst.AfterCheck += itemChecked_AfterCheck;
+            this.todolist_lst.AfterSelect += Todolist_lstOnAfterSelect;
+        }
+
+        private void Todolist_lstOnAfterSelect(object sender, TreeViewEventArgs e)
+        {
+            RefreshAndSave();
         }
 
         public void OpenNewWindow(string file)
@@ -51,9 +62,10 @@ namespace ToDoList
         public void RefreshAndSave()
         {
             // Save
-            if (_list.AutoSave && (!string.IsNullOrWhiteSpace(_list.Name) || todolist_lst.Nodes.Count > 0))
+            if (_list.AutoSave && _save.Check && !_firstLoad.Check && (!string.IsNullOrWhiteSpace(_list.Name) || todolist_lst.Nodes.Count > 0))
             {
                 Save();
+                _save.Reset();
             }
 
             // Refresh list view
@@ -75,20 +87,47 @@ namespace ToDoList
             }
             toggleToolStripMenuItem.Checked = _list.WindowOnTop;
 
-            // Calculate stats
+            // Calculate stats - overall
             if (_countDirty.Check)
             {
                 var completedPercent = (decimal)0.00;
-                var completedItemCount = GetTotalCount(true);
-                var totalItems = GetTotalCount(false);
+                var completedItemCount = GetTotalCount(todolist_lst.Nodes, true);
+                var totalItems = GetTotalCount(todolist_lst.Nodes, false);
+                var totalItemsWithParents = GetTotalCount(todolist_lst.Nodes, false, true);
                 if (totalItems > 0)
                 {
                     completedPercent = Math.Round((completedItemCount / (decimal)totalItems) * 100, 2);
                 }
 
-                totalItems_txt.Text = $"{totalItems} items ({todolist_lst.Nodes.Count} visible), {completedPercent}% Completed ({completedItemCount}/{totalItems})";
+                totalItems_txt.Text = $"{totalItems} items ({totalItemsWithParents} items incl. parents), {completedPercent}% Completed ({completedItemCount}/{totalItems})";
 
                 _countDirty.Reset();
+            }
+
+            // Calculate stats - for selected node
+            if (todolist_lst.SelectedNode != null)
+            {
+                var totalItems = GetTotalCount(todolist_lst.SelectedNode.Nodes, false);
+                if (totalItems == 0)
+                {
+                    currentSelectionStats_txt.Text = "No child items for selected node";
+                }
+                else
+                {
+                    var completedItemCount = GetTotalCount(todolist_lst.SelectedNode.Nodes, true);
+
+                    var completedPercent = (decimal)0.00;
+                    if (totalItems > 0)
+                    {
+                        completedPercent = Math.Round((completedItemCount / (decimal)totalItems) * 100, 2);
+                    }
+                    currentSelectionStats_txt.Text = $"{totalItems} child items for selected node, {completedPercent}% Completed ({completedItemCount}/{totalItems})";
+                }
+
+            }
+            else
+            {
+                currentSelectionStats_txt.Text = "No item selected!";
             }
 
             if (!string.IsNullOrWhiteSpace(_list.Name))
@@ -98,31 +137,39 @@ namespace ToDoList
             }
         }
 
-        public int GetTotalCount(bool countOnlyCheckedItems)
+        public int GetTotalCount(TreeNodeCollection nodes, bool countOnlyCheckedItems, bool countParentNodes = false)
         {
             var count = 0;
-            for (var i = 0; i < todolist_lst.Nodes.Count; i++)
+            for (var i = 0; i < nodes.Count; i++)
             {
-                count += GetTotalCountHelper(todolist_lst.Nodes[i], countOnlyCheckedItems);
+                count += GetTotalCountHelper(nodes[i], countOnlyCheckedItems, countParentNodes);
             }
 
             return count;
         }
 
-        public int GetTotalCountHelper(TreeNode node, bool countOnlyCheckedItems)
+        public int GetTotalCountHelper(TreeNode node, bool countOnlyCheckedItems, bool countParentNodes)
         {
-            var count = !countOnlyCheckedItems
-                ? 1
-                : node.Checked
-                    ? 1
-                    : 0;
-
-            for (var i = 0; i < node.Nodes.Count; i++)
+            var count = 0;
+            if (node.Nodes.Count == 0 || (node.Nodes.Count > 0 && countParentNodes) || (node.Nodes.Count == 0 && GetNodeChecked(node)))
             {
-                count += GetTotalCountHelper(node.Nodes[i], countOnlyCheckedItems);
+                count = 1;
+            }
+
+            if (count == 1 || node.Nodes.Count > 0)
+            {
+                for (var i = 0; i < node.Nodes.Count; i++)
+                {
+                    count += GetTotalCountHelper(node.Nodes[i], countOnlyCheckedItems, countParentNodes);
+                }
             }
 
             return count;
+        }
+
+        public bool GetNodeChecked(TreeNode node)
+        {
+            return todolist_lst.GetChecked(node) == TriStateTreeView.CheckState.Checked;
         }
 
         public bool GetInput(string prompt, string title, string defaultResponse, out string output)
@@ -181,9 +228,11 @@ namespace ToDoList
 
         private string GetNewFileName()
         {
+            _openDialog.MarkChecked();
             var saveFileName = new SaveFileDialog();
             saveFileName.Filter = Constants.SupportedFileTypes;
             saveFileName.ShowDialog();
+            _openDialog.Reset();
             return saveFileName.FileName;
         }
 
@@ -215,10 +264,12 @@ namespace ToDoList
 
         public void Open(string file)
         {
+            _firstLoad.MarkChecked();
             var input = File.ReadAllText(file);
             var list = JsonConvert.DeserializeObject<ToDoListList>(input);
             if (list.SaveFileVersion == Constants.SaveFileVersion)
             {
+                _filePath = file;
                 _list = list;
                 DeserializeTreeView(_list.ItemsJson);
             }
@@ -227,7 +278,9 @@ namespace ToDoList
                 // TODO when I upgrade save file versions :) 
             }
 
+            _countDirty.MarkChecked();
             RefreshAndSave();
+            _firstLoad.Reset();
         }
 
         public string SerializeTreeView()
@@ -243,7 +296,7 @@ namespace ToDoList
 
         public TreeNodeItem SerializerHelper(TreeNode node)
         {
-            var newItem = new TreeNodeItem(node.Text, node.Checked);
+            var newItem = new TreeNodeItem(node.Text, GetNodeChecked(node));
             for (var i = 0; i < node.Nodes.Count; i++)
             {
                 newItem.Children.Add(SerializerHelper(node.Nodes[i]));
@@ -254,21 +307,55 @@ namespace ToDoList
 
         public void DeserializeTreeView(string serializedData)
         {
+            var checkStates = new Dictionary<TreeNode, TriStateTreeView.CheckState>();
             var deserializedNodes = JsonConvert.DeserializeObject<List<TreeNodeItem>>(serializedData);
             for (var i = 0; i < deserializedNodes?.Count; i++)
             {
-                DeserializerHelper(todolist_lst.Nodes, deserializedNodes[i]);
+                DeserializerHelper(todolist_lst.Nodes, deserializedNodes[i], checkStates);
             }
+
+            foreach (var state in checkStates.Where(x => x.Value == TriStateTreeView.CheckState.Unchecked))
+            {
+                todolist_lst.SetChecked(state.Key, state.Value);
+            }
+            foreach (var state in checkStates.Where(x => x.Value == TriStateTreeView.CheckState.Checked))
+            {
+                todolist_lst.SetChecked(state.Key, state.Value);
+            }
+            todolist_lst.Refresh();
         }
 
-        public void DeserializerHelper(TreeNodeCollection nodes, TreeNodeItem item)
+        public void DeserializerHelper(TreeNodeCollection nodes, TreeNodeItem item, Dictionary<TreeNode, TriStateTreeView.CheckState> checkStates)
         {
             var node = CreateNode(item.Text, item.Checked);
-            for (var i = 0; i < item.Children.Count; i++)
+            TriStateTreeView.CheckState state = item.Checked ? TriStateTreeView.CheckState.Checked : TriStateTreeView.CheckState.Unchecked;
+            if (item.Children.Count > 0)
             {
-                DeserializerHelper(node.Nodes, item.Children[i]);
+                bool oneChecked = false;
+                bool oneUnchecked = false;
+                for (var i = 0; i < item.Children.Count; i++)
+                {
+                    if (item.Children[i].Checked)
+                    {
+                        oneChecked = true;
+                    }
+                    if (!item.Children[i].Checked)
+                    {
+                        oneUnchecked = true;
+                    }
+                    DeserializerHelper(node.Nodes, item.Children[i], checkStates);
+                }
+
+                if (oneUnchecked && oneChecked)
+                {
+                    state = TriStateTreeView.CheckState.GreyChecked;
+                }
             }
 
+            if (state != TriStateTreeView.CheckState.GreyChecked)
+            {
+                checkStates.Add(node, state);
+            }
             nodes.Add(node);
         }
 
@@ -279,12 +366,14 @@ namespace ToDoList
 
         private void openListToolStripMenuItem_Click(object sender, EventArgs e)
         {
+            _openDialog.MarkChecked();
             var openDialog = new OpenFileDialog
             {
                 Filter = Constants.SupportedFileTypes,
                 Multiselect = true
             };
             openDialog.ShowDialog();
+            _openDialog.Reset();
 
             if (openDialog.FileNames.Length == 1 && todolist_lst.Nodes.Count == 0 && string.IsNullOrWhiteSpace(_list.Name))
             {
@@ -377,6 +466,7 @@ namespace ToDoList
         private void clearListToolStripMenuItem_Click(object sender, EventArgs e)
         {
             todolist_lst.Nodes.Clear();
+            _save.MarkChecked();
             RefreshAndSave();
         }
 
@@ -415,8 +505,10 @@ namespace ToDoList
 
         private void aboutToolStripMenuItem_Click(object sender, EventArgs e)
         {
+            _openDialog.MarkChecked();
             var about = new AboutBox();
             about.ShowDialog();
+            _openDialog.Reset();
         }
 
         private void reportBugToolStripMenuItem_Click(object sender, EventArgs e)
@@ -427,7 +519,9 @@ namespace ToDoList
             }
             catch
             {
+                _openDialog.MarkChecked();
                 Interaction.MsgBox($"Please go to {Constants.IssueAndFeatureRequestPage} to file a bug or request a new feature!");
+                _openDialog.Reset();
             }
         }
 
@@ -493,6 +587,7 @@ namespace ToDoList
                 if (currentIndex != nextIndex)
                 {
                     SwapItems(currentIndex, nextIndex, nodes);
+                    _save.MarkChecked();
                     RefreshAndSave();
                 }
             }
@@ -510,6 +605,7 @@ namespace ToDoList
                 if (currentIndex != nextIndex)
                 {
                     SwapItems(nextIndex, currentIndex, nodes);
+                    _save.MarkChecked();
                     RefreshAndSave();
                 }
             }
@@ -523,6 +619,7 @@ namespace ToDoList
                 todolist_lst.Nodes.Add(newNode);
 
                 _countDirty.MarkChecked();
+                _save.MarkChecked();
                 RefreshAndSave();
             }
         }
@@ -535,6 +632,7 @@ namespace ToDoList
                 todolist_lst.SelectedNode.Nodes.Add(newNode);
 
                 _countDirty.MarkChecked();
+                _save.MarkChecked();
                 RefreshAndSave();
             }
         }
@@ -545,6 +643,7 @@ namespace ToDoList
             {
                 todolist_lst.SelectedNode.Text = newItem;
 
+                _save.MarkChecked();
                 RefreshAndSave();
             }
         }
@@ -556,6 +655,7 @@ namespace ToDoList
                 todolist_lst.Nodes.Remove(todolist_lst.SelectedNode);
 
                 _countDirty.MarkChecked();
+                _save.MarkChecked();
                 RefreshAndSave();
             }
         }
@@ -595,30 +695,46 @@ namespace ToDoList
             toggleExpandAllItemsToolStripMenuItem_Click(sender, e);
         }
 
-        private void itemChecked_AfterCheck(object sender, EventArgs e)
-        {
-            _countDirty.MarkChecked();
-        }
-
         private void itemChecked_AfterCheck(object sender, TreeViewEventArgs e)
         {
-            if (_list.AutoSave)
+            if (!_firstLoad.Check)
             {
-                Save();
+                var isChecked = todolist_lst.GetChecked(e.Node);
+                var update = false;
+                if (isChecked == TriStateTreeView.CheckState.Checked && !e.Node.Checked)
+                {
+                    e.Node.Checked = true;
+                    update = true;
+                }
+                else if (isChecked == TriStateTreeView.CheckState.Unchecked && e.Node.Checked)
+                {
+                    e.Node.Checked = false;
+                    update = true;
+                }
+                _countDirty.MarkChecked();
+
+                if (update)
+                {
+                    _save.MarkChecked();
+                    RefreshAndSave();
+                }
             }
         }
 
         private void InputText_txtOnKeyUp(object sender, KeyEventArgs e)
         {
-            if (e.KeyCode == Keys.Enter)
+            if (!_openDialog.Check)
             {
-                if (todolist_lst.SelectedNode != null)
+                if (e.KeyCode == Keys.Enter)
                 {
-                    addNewChildItemMainStrip_Click(sender, e);
-                }
-                else
-                {
-                    addNewItemToolStripMenuItem_Click(sender, e);
+                    if (todolist_lst.SelectedNode != null)
+                    {
+                        addNewChildItemMainStrip_Click(sender, e);
+                    }
+                    else
+                    {
+                        addNewItemToolStripMenuItem_Click(sender, e);
+                    }
                 }
             }
         }
