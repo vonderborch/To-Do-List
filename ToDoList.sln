@@ -14,20 +14,22 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "SolutionItems", "SolutionIt
 		README.md = README.md
 	EndProjectSection
 EndProject
-Project("{54435603-DBB4-11D2-8724-00A0C9A8B90C}") = "ToDoListInstaller", "ToDoListInstaller\ToDoListInstaller.vdproj", "{259B2999-9CBC-4ABF-A845-9BF587084BAC}"
-EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
+		Debug|x86 = Debug|x86
 		Release|Any CPU = Release|Any CPU
+		Release|x86 = Release|x86
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
 		{72CE0576-6D9D-4C25-892C-19B6D605F6BB}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{72CE0576-6D9D-4C25-892C-19B6D605F6BB}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{72CE0576-6D9D-4C25-892C-19B6D605F6BB}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{72CE0576-6D9D-4C25-892C-19B6D605F6BB}.Debug|x86.Build.0 = Debug|Any CPU
 		{72CE0576-6D9D-4C25-892C-19B6D605F6BB}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{72CE0576-6D9D-4C25-892C-19B6D605F6BB}.Release|Any CPU.Build.0 = Release|Any CPU
-		{259B2999-9CBC-4ABF-A845-9BF587084BAC}.Debug|Any CPU.ActiveCfg = Debug
-		{259B2999-9CBC-4ABF-A845-9BF587084BAC}.Release|Any CPU.ActiveCfg = Release
+		{72CE0576-6D9D-4C25-892C-19B6D605F6BB}.Release|x86.ActiveCfg = Release|Any CPU
+		{72CE0576-6D9D-4C25-892C-19B6D605F6BB}.Release|x86.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
