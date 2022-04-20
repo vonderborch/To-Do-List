@@ -408,5 +408,10 @@ namespace ToDoList
         {
             moveCurrentItemDownToolStripMenuItem_Click(sender, e);
         }
+
+        private void addNewChildItemToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+
+        }
     }
 }

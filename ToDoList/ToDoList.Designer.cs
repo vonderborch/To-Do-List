@@ -55,6 +55,8 @@
             this.addItemToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.toolStripMenuItem1 = new System.Windows.Forms.ToolStripMenuItem();
             this.deleteCurrentItemToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.toolStripMenuItem2 = new System.Windows.Forms.ToolStripMenuItem();
+            this.toolStripMenuItem3 = new System.Windows.Forms.ToolStripMenuItem();
             this.viewToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.showAllItemsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.hideUncompletedItemsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
@@ -70,8 +72,7 @@
             this.listName_txt = new System.Windows.Forms.ToolStripTextBox();
             this.totalItems_txt = new System.Windows.Forms.ToolStripTextBox();
             this.todolist_lst = new System.Windows.Forms.CheckedListBox();
-            this.toolStripMenuItem2 = new System.Windows.Forms.ToolStripMenuItem();
-            this.toolStripMenuItem3 = new System.Windows.Forms.ToolStripMenuItem();
+            this.addNewChildItemToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.menuStrip1.SuspendLayout();
             this.SuspendLayout();
             // 
@@ -113,52 +114,52 @@
             // newToolStripMenuItem
             // 
             this.newToolStripMenuItem.Name = "newToolStripMenuItem";
-            this.newToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
+            this.newToolStripMenuItem.Size = new System.Drawing.Size(162, 22);
             this.newToolStripMenuItem.Text = "New List";
             this.newToolStripMenuItem.Click += new System.EventHandler(this.newToolStripMenuItem_Click);
             // 
             // openListToolStripMenuItem
             // 
             this.openListToolStripMenuItem.Name = "openListToolStripMenuItem";
-            this.openListToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
+            this.openListToolStripMenuItem.Size = new System.Drawing.Size(162, 22);
             this.openListToolStripMenuItem.Text = "Open List";
             this.openListToolStripMenuItem.Click += new System.EventHandler(this.openListToolStripMenuItem_Click);
             // 
             // toolStripSeparator1
             // 
             this.toolStripSeparator1.Name = "toolStripSeparator1";
-            this.toolStripSeparator1.Size = new System.Drawing.Size(177, 6);
+            this.toolStripSeparator1.Size = new System.Drawing.Size(159, 6);
             // 
             // saveListToolStripMenuItem
             // 
             this.saveListToolStripMenuItem.Name = "saveListToolStripMenuItem";
-            this.saveListToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
+            this.saveListToolStripMenuItem.Size = new System.Drawing.Size(162, 22);
             this.saveListToolStripMenuItem.Text = "Save List";
             this.saveListToolStripMenuItem.Click += new System.EventHandler(this.saveListToolStripMenuItem_Click);
             // 
             // saveListAsToolStripMenuItem
             // 
             this.saveListAsToolStripMenuItem.Name = "saveListAsToolStripMenuItem";
-            this.saveListAsToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
+            this.saveListAsToolStripMenuItem.Size = new System.Drawing.Size(162, 22);
             this.saveListAsToolStripMenuItem.Text = "Save List As";
             this.saveListAsToolStripMenuItem.Click += new System.EventHandler(this.saveListAsToolStripMenuItem_Click);
             // 
             // enableAutoSaveToolStripMenuItem
             // 
             this.enableAutoSaveToolStripMenuItem.Name = "enableAutoSaveToolStripMenuItem";
-            this.enableAutoSaveToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
+            this.enableAutoSaveToolStripMenuItem.Size = new System.Drawing.Size(162, 22);
             this.enableAutoSaveToolStripMenuItem.Text = "Toggle AutoSave";
             this.enableAutoSaveToolStripMenuItem.Click += new System.EventHandler(this.enableAutoSaveToolStripMenuItem_Click);
             // 
             // toolStripSeparator3
             // 
             this.toolStripSeparator3.Name = "toolStripSeparator3";
-            this.toolStripSeparator3.Size = new System.Drawing.Size(177, 6);
+            this.toolStripSeparator3.Size = new System.Drawing.Size(159, 6);
             // 
             // closeListToolStripMenuItem
             // 
             this.closeListToolStripMenuItem.Name = "closeListToolStripMenuItem";
-            this.closeListToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
+            this.closeListToolStripMenuItem.Size = new System.Drawing.Size(162, 22);
             this.closeListToolStripMenuItem.Text = "Close List";
             this.closeListToolStripMenuItem.Click += new System.EventHandler(this.closeListToolStripMenuItem_Click);
             // 
@@ -261,6 +262,8 @@
             // 
             // addItemToolStripMenuItem
             // 
+            this.addItemToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.addNewChildItemToolStripMenuItem});
             this.addItemToolStripMenuItem.Name = "addItemToolStripMenuItem";
             this.addItemToolStripMenuItem.Size = new System.Drawing.Size(95, 23);
             this.addItemToolStripMenuItem.Text = "Add New Item";
@@ -279,6 +282,20 @@
             this.deleteCurrentItemToolStripMenuItem.Size = new System.Drawing.Size(122, 23);
             this.deleteCurrentItemToolStripMenuItem.Text = "Delete Current Item";
             this.deleteCurrentItemToolStripMenuItem.Click += new System.EventHandler(this.deleteCurrentItemToolStripMenuItem_Click);
+            // 
+            // toolStripMenuItem2
+            // 
+            this.toolStripMenuItem2.Name = "toolStripMenuItem2";
+            this.toolStripMenuItem2.Size = new System.Drawing.Size(29, 23);
+            this.toolStripMenuItem2.Text = "/\\";
+            this.toolStripMenuItem2.Click += new System.EventHandler(this.toolStripMenuItem2_Click);
+            // 
+            // toolStripMenuItem3
+            // 
+            this.toolStripMenuItem3.Name = "toolStripMenuItem3";
+            this.toolStripMenuItem3.Size = new System.Drawing.Size(29, 23);
+            this.toolStripMenuItem3.Text = "\\/";
+            this.toolStripMenuItem3.Click += new System.EventHandler(this.toolStripMenuItem3_Click);
             // 
             // viewToolStripMenuItem
             // 
@@ -385,25 +402,20 @@
             // 
             this.todolist_lst.Dock = System.Windows.Forms.DockStyle.Fill;
             this.todolist_lst.FormattingEnabled = true;
+            this.todolist_lst.HorizontalScrollbar = true;
             this.todolist_lst.Location = new System.Drawing.Point(0, 27);
             this.todolist_lst.Name = "todolist_lst";
             this.todolist_lst.Size = new System.Drawing.Size(1063, 556);
             this.todolist_lst.TabIndex = 1;
+            this.todolist_lst.ThreeDCheckBoxes = true;
             this.todolist_lst.SelectedIndexChanged += new System.EventHandler(this.todolist_lst_SelectedIndexChanged);
             // 
-            // toolStripMenuItem2
+            // addNewChildItemToolStripMenuItem
             // 
-            this.toolStripMenuItem2.Name = "toolStripMenuItem2";
-            this.toolStripMenuItem2.Size = new System.Drawing.Size(29, 23);
-            this.toolStripMenuItem2.Text = "/\\";
-            this.toolStripMenuItem2.Click += new System.EventHandler(this.toolStripMenuItem2_Click);
-            // 
-            // toolStripMenuItem3
-            // 
-            this.toolStripMenuItem3.Name = "toolStripMenuItem3";
-            this.toolStripMenuItem3.Size = new System.Drawing.Size(29, 23);
-            this.toolStripMenuItem3.Text = "\\/";
-            this.toolStripMenuItem3.Click += new System.EventHandler(this.toolStripMenuItem3_Click);
+            this.addNewChildItemToolStripMenuItem.Name = "addNewChildItemToolStripMenuItem";
+            this.addNewChildItemToolStripMenuItem.Size = new System.Drawing.Size(181, 22);
+            this.addNewChildItemToolStripMenuItem.Text = "Add New Child Item";
+            this.addNewChildItemToolStripMenuItem.Click += new System.EventHandler(this.addNewChildItemToolStripMenuItem_Click);
             // 
             // ToDoList
             // 
@@ -468,6 +480,7 @@
         private System.Windows.Forms.ToolStripMenuItem deleteCurrentItemToolStripMenuItem1;
         private System.Windows.Forms.ToolStripMenuItem toolStripMenuItem2;
         private System.Windows.Forms.ToolStripMenuItem toolStripMenuItem3;
+        private System.Windows.Forms.ToolStripMenuItem addNewChildItemToolStripMenuItem;
     }
 }
 

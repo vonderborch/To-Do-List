@@ -16,6 +16,8 @@ namespace ToDoList
 
         public bool WindowOnTop;
 
+        public int SaveFileVersion = Constants.SaveFileVersion;
+
         public ToDoListList(string name = "")
         {
             Name = name;

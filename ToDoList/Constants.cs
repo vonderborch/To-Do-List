@@ -13,5 +13,7 @@
         public static string IssueAndFeatureRequestPage = "https://github.com/vonderborch/To-Do-List/issues/new";
 
         public static string NewVersionPage = "https://github.com/vonderborch/To-Do-List/releases";
+
+        public static int SaveFileVersion = 2;
     }
 }
