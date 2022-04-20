@@ -268,7 +268,6 @@ namespace ToDoList
                 File.WriteAllText(_filePath, output);
                 Singleton.Instance.SaveGuard.Reset();
             }
-            RefreshAndSave();
         }
 
         public void Open(string file)
@@ -723,10 +722,10 @@ namespace ToDoList
                     e.Node.Checked = false;
                     update = true;
                 }
-                _countDirty.MarkChecked();
 
                 if (update)
                 {
+                    _countDirty.MarkChecked();
                     _save.MarkChecked();
                     RefreshAndSave();
                 }
