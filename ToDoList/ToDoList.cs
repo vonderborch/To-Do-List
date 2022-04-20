@@ -3,6 +3,7 @@ using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.Drawing;
 using System.IO;
 using System.Linq;
 using System.Reflection;
@@ -19,10 +20,13 @@ namespace ToDoList
 
         private string _filePath = "";
 
-        public Guard _countDirty = new Guard();
-        public Guard _save = new Guard();
-        public Guard _firstLoad = new Guard();
-        public Guard _openDialog = new Guard();
+        private Guard _countDirty = new Guard();
+        private Guard _save = new Guard();
+        private Guard _firstLoad = new Guard();
+        private Guard _openDialog = new Guard();
+
+        private Font _checkedFont;
+        private Font _baseFont;
 
         public ToDoList()
         {
@@ -47,6 +51,9 @@ namespace ToDoList
             this.inputText_txt.KeyUp += InputText_txtOnKeyUp;
             this.todolist_lst.AfterCheck += itemChecked_AfterCheck;
             this.todolist_lst.AfterSelect += Todolist_lstOnAfterSelect;
+
+            _baseFont = todolist_lst.Font;
+            _checkedFont = new Font(todolist_lst.Font, FontStyle.Strikeout);
         }
 
         private void Todolist_lstOnAfterSelect(object sender, TreeViewEventArgs e)
@@ -192,12 +199,17 @@ namespace ToDoList
         {
             var selectedIsIndexA = nodes[indexA] == todolist_lst.SelectedNode;
 
-            var nodeA = CopyNode(nodes[indexA]);
+            var nodeA = CopyNode(nodes[indexA], out var checkedNodes);
             nodes.Insert(indexB, nodeA);
             nodes.RemoveAt(indexA + 1);
             if (selectedIsIndexA)
             {
                 todolist_lst.SelectedNode = nodeA;
+            }
+
+            for (var i = 0; i < checkedNodes.Count; i++)
+            {
+                todolist_lst.SetChecked(checkedNodes[i], TriStateTreeView.CheckState.Checked);
             }
         }
 
@@ -209,15 +221,26 @@ namespace ToDoList
             };
         }
 
-        public TreeNode CopyNode(TreeNode oldNode)
+        public TreeNode CopyNode(TreeNode oldNode, out List<TreeNode> checkedNodes)
         {
+            checkedNodes = new List<TreeNode>();
+
             var node = new TreeNode(oldNode.Text)
             {
-                Checked = oldNode.Checked
+                Checked = oldNode.Checked,
+                NodeFont = oldNode.Checked ? _checkedFont : _baseFont
             };
+
+            if (node.Checked)
+            {
+                checkedNodes.Add(node);
+            }
+
+
             for (var i = 0; i < oldNode.Nodes.Count; i++)
             {
-                node.Nodes.Add(CopyNode(oldNode.Nodes[i]));
+                node.Nodes.Add(CopyNode(oldNode.Nodes[i], out var tmp));
+                checkedNodes.AddRange(tmp);
             }
 
             return node;
@@ -329,6 +352,7 @@ namespace ToDoList
             foreach (var state in checkStates.Where(x => x.Value == TriStateTreeView.CheckState.Checked))
             {
                 todolist_lst.SetChecked(state.Key, state.Value);
+                state.Key.NodeFont = _checkedFont;
             }
             todolist_lst.Refresh();
         }
@@ -715,11 +739,13 @@ namespace ToDoList
                 if (isChecked == TriStateTreeView.CheckState.Checked && !e.Node.Checked)
                 {
                     e.Node.Checked = true;
+                    e.Node.NodeFont = _checkedFont;
                     update = true;
                 }
                 else if (isChecked == TriStateTreeView.CheckState.Unchecked && e.Node.Checked)
                 {
                     e.Node.Checked = false;
+                    e.Node.NodeFont = _baseFont;
                     update = true;
                 }
 
@@ -764,12 +790,17 @@ namespace ToDoList
         {
             if (todolist_lst.SelectedNode != null && GetInput("New Item Text", "Copy Item", todolist_lst.SelectedNode.Text, out var newItem))
             {
-                var newNode = CopyNode(todolist_lst.SelectedNode);
+                var newNode = CopyNode(todolist_lst.SelectedNode, out var checkedNodes);
                 newNode.Text = newItem;
                 var nodes = todolist_lst.SelectedNode.Parent == null
                     ? todolist_lst.Nodes
                     : todolist_lst.SelectedNode.Parent.Nodes;
                 nodes.Add(newNode);
+
+                for (var i = 0; i < checkedNodes.Count; i++)
+                {
+                    todolist_lst.SetChecked(checkedNodes[i], TriStateTreeView.CheckState.Checked);
+                }
 
                 _countDirty.MarkChecked();
                 _save.MarkChecked();
