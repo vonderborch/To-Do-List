@@ -113,6 +113,8 @@ namespace ToDoList
                 Save();
             }
             enableAutoSaveToolStripMenuItem.Checked = _list.AutoSave;
+            toggleToolStripMenuItem.Checked = _list.WindowOnTop;
+            this.TopMost = _list.WindowOnTop;
             showAllItemsToolStripMenuItem.Checked = _list.ShowCompletedItems;
             hideUncompletedItemsToolStripMenuItem.Checked = _list.ShowIncompleteItems;
 
@@ -251,6 +253,12 @@ namespace ToDoList
             saveFileName.Filter = Constants.SupportedFileTypes;
             saveFileName.ShowDialog();
             return saveFileName.FileName;
+        }
+
+        private void toggleToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            _list.WindowOnTop = !_list.WindowOnTop;
+            RefreshListBox();
         }
     }
 }

@@ -14,6 +14,8 @@ namespace ToDoList
 
         public bool AutoSave;
 
+        public bool WindowOnTop;
+
         public ToDoListList(string name = "")
         {
             Name = name;
@@ -21,6 +23,7 @@ namespace ToDoList
             ShowCompletedItems = true;
             ShowIncompleteItems = true;
             AutoSave = false;
+            WindowOnTop = false;
         }
     }
 }
