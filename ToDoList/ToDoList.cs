@@ -85,6 +85,12 @@ namespace ToDoList
             this.todolist_lst.AfterCheck += new System.Windows.Forms.TreeViewEventHandler(this.itemChecked_AfterCheck);
             this.copyCurrentItemToolStripMenuItem.Click += new System.EventHandler(this.copyCurrentItemToolStripMenuItem_Click);
             this.copyCurrentItemToolStripMenuItem1.Click += new System.EventHandler(this.copyCurrentItemToolStripMenuItem1_Click);
+            this.addChildItemToolStripMenuItem.Click += new System.EventHandler(this.addChildItemToolStripMenuItem_Click);
+            this.copyItemToolStripMenuItem.Click += new System.EventHandler(this.copyItemToolStripMenuItem_Click);
+            this.editItemToolStripMenuItem.Click += new System.EventHandler(this.editItemToolStripMenuItem_Click);
+            this.deleteItemToolStripMenuItem.Click += new System.EventHandler(this.deleteItemToolStripMenuItem_Click);
+            this.moveItemUpToolStripMenuItem.Click += new System.EventHandler(this.moveItemUpToolStripMenuItem_Click);
+            this.moveItemDownToolStripMenuItem.Click += new System.EventHandler(this.moveItemDownToolStripMenuItem_Click);
 
             this.inputText_txt.KeyUp += InputText_txtOnKeyUp;
             this.todolist_lst.AfterCheck += itemChecked_AfterCheck;
@@ -866,6 +872,36 @@ namespace ToDoList
         private void copyCurrentItemToolStripMenuItem1_Click(object sender, EventArgs e)
         {
             copyCurrentItemToolStripMenuItem_Click(sender, e);
+        }
+
+        private void addChildItemToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            addNewChildItemToolStripMenuItem1_Click(sender, e);
+        }
+
+        private void copyItemToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            copyCurrentItemToolStripMenuItem1_Click(sender, e);
+        }
+
+        private void editItemToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            editCurrentItemToolStripMenuItem_Click(sender, e);
+        }
+
+        private void deleteItemToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            deleteCurrentItemToolStripMenuItem1_Click(sender, e);
+        }
+
+        private void moveItemUpToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            moveItemUpMainStrip_Click(sender, e);
+        }
+
+        private void moveItemDownToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            moveItemDownMainStrip_Click(sender, e);
         }
     }
 }
