@@ -14,7 +14,7 @@ using Velentr.Miscellaneous;
 
 namespace ToDoList
 {
-    public partial class ToDoList : Form
+    public partial class ToDoListCopy : Form
     {
         private ToDoListList _list;
 
@@ -28,14 +28,14 @@ namespace ToDoList
         private Font _checkedFont;
         private Font _baseFont;
 
-        public ToDoList()
+        public ToDoListCopy()
         {
             InitializeComponent();
             ExtraInitialization();
             RefreshAndSave();
         }
 
-        public ToDoList(string file)
+        public ToDoListCopy(string file)
         {
             InitializeComponent();
             ExtraInitialization();
@@ -46,51 +46,12 @@ namespace ToDoList
 
         public void ExtraInitialization()
         {
-            // basics
             _list = new ToDoListList();
             _countDirty.MarkChecked();
-
-            // events
-            this.addItemToolStripMenuItem.Click += new System.EventHandler(this.addItemToolStripMenuItem_Click);
-            this.addNewChildItemMainStrip.Click += new System.EventHandler(this.addNewChildItemMainStrip_Click);
-            this.editCurrentItemMainStrip.Click += new System.EventHandler(this.editCurrentItemMainStrip_Click);
-            this.deleteCurrentItemToolStripMenuItem.Click += new System.EventHandler(this.deleteCurrentItemToolStripMenuItem_Click);
-            this.moveItemUpMainStrip.Click += new System.EventHandler(this.moveItemUpMainStrip_Click);
-            this.moveItemDownMainStrip.Click += new System.EventHandler(this.moveItemDownMainStrip_Click);
-            this.toggleExpandAllItemsToolStripMenuItem1.Click += new System.EventHandler(this.toggleExpandAllItemsToolStripMenuItem1_Click);
-            this.unselectCurrentItemToolStripMenuItem.Click += new System.EventHandler(this.unselectCurrentItemToolStripMenuItem_Click);
-            this.newToolStripMenuItem.Click += new System.EventHandler(this.newToolStripMenuItem_Click);
-            this.openListToolStripMenuItem.Click += new System.EventHandler(this.openListToolStripMenuItem_Click);
-            this.openListInCurrentWindowToolStripMenuItem.Click += new System.EventHandler(this.openListInCurrentWindowToolStripMenuItem_Click);
-            this.saveListToolStripMenuItem.Click += new System.EventHandler(this.saveListToolStripMenuItem_Click);
-            this.saveListAsToolStripMenuItem.Click += new System.EventHandler(this.saveListAsToolStripMenuItem_Click);
-            this.enableAutoSaveToolStripMenuItem.Click += new System.EventHandler(this.enableAutoSaveToolStripMenuItem_Click);
-            this.closeListToolStripMenuItem.Click += new System.EventHandler(this.closeListToolStripMenuItem_Click); ;
-            this.clearListToolStripMenuItem.Click += new System.EventHandler(this.clearListToolStripMenuItem_Click);
-            this.toggleAllItemsCompletedToolStripMenuItem.Click += new System.EventHandler(this.toggleAllItemsCompletedToolStripMenuItem_Click);
-            this.markAllItemsIncompleteToolStripMenuItem.Click += new System.EventHandler(this.markAllItemsIncompleteToolStripMenuItem_Click);
-            this.toggleItemStateToolStripMenuItem.Click += new System.EventHandler(this.toggleItemStateToolStripMenuItem_Click);
-            this.moveCurrentItemUpToolStripMenuItem.Click += new System.EventHandler(this.moveCurrentItemUpToolStripMenuItem_Click);
-            this.moveCurrentItemDownToolStripMenuItem.Click += new System.EventHandler(this.moveCurrentItemDownToolStripMenuItem_Click);
-            this.addNewItemToolStripMenuItem.Click += new System.EventHandler(this.addNewItemToolStripMenuItem_Click);
-            this.addNewChildItemToolStripMenuItem1.Click += new System.EventHandler(this.addNewChildItemToolStripMenuItem1_Click);
-            this.editCurrentItemToolStripMenuItem.Click += new System.EventHandler(this.editCurrentItemToolStripMenuItem_Click);
-            this.deleteCurrentItemToolStripMenuItem1.Click += new System.EventHandler(this.deleteCurrentItemToolStripMenuItem1_Click);
-            this.toggleToolStripMenuItem.Click += new System.EventHandler(this.toggleToolStripMenuItem_Click);
-            this.toggleExpandAllItemsToolStripMenuItem.Click += new System.EventHandler(this.toggleExpandAllItemsToolStripMenuItem_Click);
-            this.unselectCurrentSelectedItemToolStripMenuItem.Click += new System.EventHandler(this.unselectCurrentSelectedItemToolStripMenuItem_Click);
-            this.aboutToolStripMenuItem.Click += new System.EventHandler(this.aboutToolStripMenuItem_Click);
-            this.reportBugToolStripMenuItem.Click += new System.EventHandler(this.reportBugToolStripMenuItem_Click);
-            this.checkForUpdatesToolStripMenuItem.Click += new System.EventHandler(this.checkForUpdatesToolStripMenuItem_Click);
-            this.todolist_lst.AfterCheck += new System.Windows.Forms.TreeViewEventHandler(this.itemChecked_AfterCheck);
-            this.copyCurrentItemToolStripMenuItem.Click += new System.EventHandler(this.copyCurrentItemToolStripMenuItem_Click);
-            this.copyCurrentItemToolStripMenuItem1.Click += new System.EventHandler(this.copyCurrentItemToolStripMenuItem1_Click);
-
             this.inputText_txt.KeyUp += InputText_txtOnKeyUp;
             this.todolist_lst.AfterCheck += itemChecked_AfterCheck;
             this.todolist_lst.AfterSelect += Todolist_lstOnAfterSelect;
 
-            // fonts
             _baseFont = todolist_lst.Font;
             _checkedFont = new Font(todolist_lst.Font, FontStyle.Strikeout);
         }
@@ -189,7 +150,7 @@ namespace ToDoList
         public int GetTotalCountHelper(TreeNode node, bool countOnlyCheckedItems, bool countParentNodes)
         {
             var count = 0;
-            if ((node.Nodes.Count > 0 && countParentNodes) || (node.Nodes.Count == 0 && ((GetNodeChecked(node) && countOnlyCheckedItems) || !countOnlyCheckedItems)))
+            if (node.Nodes.Count == 0 || (node.Nodes.Count > 0 && countParentNodes) || (node.Nodes.Count == 0 && GetNodeChecked(node)))
             {
                 count = 1;
             }
@@ -229,7 +190,7 @@ namespace ToDoList
         public void SwapItems(int indexA, int indexB, TreeNodeCollection nodes)
         {
             var selectedIsIndexA = nodes[indexA] == todolist_lst.SelectedNode;
-            var isExpanded = nodes[indexA].IsExpanded;
+
             var nodeA = CopyNode(nodes[indexA], out var checkedNodes);
             nodes.Insert(indexB, nodeA);
             nodes.RemoveAt(indexA + 1);
@@ -238,10 +199,6 @@ namespace ToDoList
                 todolist_lst.SelectedNode = nodeA;
             }
 
-            if (isExpanded)
-            {
-                nodeA.ExpandAll();
-            }
             for (var i = 0; i < checkedNodes.Count; i++)
             {
                 todolist_lst.SetChecked(checkedNodes[i], TriStateTreeView.CheckState.Checked);
@@ -283,23 +240,12 @@ namespace ToDoList
 
         public void ChangeItemState(TreeNode node, bool? newState)
         {
-            _firstLoad.MarkChecked();
             node.Checked = newState ?? !node.Checked;
-            if (node.Nodes.Count > 0)
-            {
-                for (var i = 0; i < node.Nodes.Count; i++)
-                {
-                    ChangeItemState(node.Nodes[i], newState);
-                }
 
-                node.NodeFont = todolist_lst.GetChecked(node) == TriStateTreeView.CheckState.Checked ? _checkedFont : _baseFont;
-            }
-            else
+            for (var i = 0; i < node.Nodes.Count; i++)
             {
-                todolist_lst.SetChecked(node, node.Checked ? TriStateTreeView.CheckState.Checked : TriStateTreeView.CheckState.Unchecked);
-                node.NodeFont = node.Checked ? _checkedFont : _baseFont;
+                ChangeItemState(node.Nodes[i], newState);
             }
-            _firstLoad.Reset();
         }
 
         private string GetNewFileName()
@@ -557,7 +503,6 @@ namespace ToDoList
             {
                 ChangeItemState(todolist_lst.Nodes[i], true);
             }
-            _countDirty.MarkChecked();
             RefreshAndSave();
         }
 
@@ -567,7 +512,6 @@ namespace ToDoList
             {
                 ChangeItemState(todolist_lst.Nodes[i], false);
             }
-            _countDirty.MarkChecked();
             RefreshAndSave();
         }
 
@@ -577,7 +521,6 @@ namespace ToDoList
             {
                 ChangeItemState(todolist_lst.Nodes[i], null);
             }
-            _countDirty.MarkChecked();
             RefreshAndSave();
         }
 
@@ -716,10 +659,6 @@ namespace ToDoList
             {
                 var newNode = CreateNode(newItem, false);
                 todolist_lst.SelectedNode.Nodes.Add(newNode);
-                if (!todolist_lst.SelectedNode.IsExpanded)
-                {
-                    todolist_lst.SelectedNode.ExpandAll();
-                }
 
                 _countDirty.MarkChecked();
                 _save.MarkChecked();
