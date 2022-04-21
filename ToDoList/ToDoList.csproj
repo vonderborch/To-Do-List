@@ -27,7 +27,7 @@
     <UpdateRequired>false</UpdateRequired>
     <MapFileExtensions>true</MapFileExtensions>
     <ApplicationRevision>2</ApplicationRevision>
-    <ApplicationVersion>1.2.5.0</ApplicationVersion>
+    <ApplicationVersion>1.3.0.0</ApplicationVersion>
     <UseApplicationTrust>false</UseApplicationTrust>
     <PublishWizardCompleted>true</PublishWizardCompleted>
     <BootstrapperEnabled>true</BootstrapperEnabled>
@@ -131,12 +131,6 @@
     <Compile Include="Singleton.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="ToDoList - Copy.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="ToDoList - Copy.Designer.cs">
-      <DependentUpon>ToDoList - Copy.cs</DependentUpon>
-    </Compile>
     <Compile Include="ToDoList.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -160,9 +154,6 @@
       <AutoGen>True</AutoGen>
       <DependentUpon>Resources.resx</DependentUpon>
     </Compile>
-    <EmbeddedResource Include="ToDoList - Copy.resx">
-      <DependentUpon>ToDoList - Copy.cs</DependentUpon>
-    </EmbeddedResource>
     <EmbeddedResource Include="ToDoList.resx">
       <DependentUpon>ToDoList.cs</DependentUpon>
     </EmbeddedResource>

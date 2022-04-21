@@ -1,5 +1,6 @@
 ﻿using Microsoft.VisualBasic;
 using Newtonsoft.Json;
+using SIL.FieldWorks.Common.Controls;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
@@ -9,7 +10,6 @@ using System.Linq;
 using System.Reflection;
 using System.Threading;
 using System.Windows.Forms;
-using SIL.FieldWorks.Common.Controls;
 using Velentr.Miscellaneous;
 
 namespace ToDoList
@@ -51,48 +51,67 @@ namespace ToDoList
             _countDirty.MarkChecked();
 
             // events
-            this.addItemToolStripMenuItem.Click += new System.EventHandler(this.addItemToolStripMenuItem_Click);
-            this.addNewChildItemMainStrip.Click += new System.EventHandler(this.addNewChildItemMainStrip_Click);
-            this.editCurrentItemMainStrip.Click += new System.EventHandler(this.editCurrentItemMainStrip_Click);
-            this.deleteCurrentItemToolStripMenuItem.Click += new System.EventHandler(this.deleteCurrentItemToolStripMenuItem_Click);
-            this.moveItemUpMainStrip.Click += new System.EventHandler(this.moveItemUpMainStrip_Click);
-            this.moveItemDownMainStrip.Click += new System.EventHandler(this.moveItemDownMainStrip_Click);
-            this.toggleExpandAllItemsToolStripMenuItem1.Click += new System.EventHandler(this.toggleExpandAllItemsToolStripMenuItem1_Click);
-            this.unselectCurrentItemToolStripMenuItem.Click += new System.EventHandler(this.unselectCurrentItemToolStripMenuItem_Click);
-            this.newToolStripMenuItem.Click += new System.EventHandler(this.newToolStripMenuItem_Click);
-            this.openListToolStripMenuItem.Click += new System.EventHandler(this.openListToolStripMenuItem_Click);
-            this.openListInCurrentWindowToolStripMenuItem.Click += new System.EventHandler(this.openListInCurrentWindowToolStripMenuItem_Click);
-            this.saveListToolStripMenuItem.Click += new System.EventHandler(this.saveListToolStripMenuItem_Click);
-            this.saveListAsToolStripMenuItem.Click += new System.EventHandler(this.saveListAsToolStripMenuItem_Click);
-            this.enableAutoSaveToolStripMenuItem.Click += new System.EventHandler(this.enableAutoSaveToolStripMenuItem_Click);
-            this.closeListToolStripMenuItem.Click += new System.EventHandler(this.closeListToolStripMenuItem_Click); ;
-            this.clearListToolStripMenuItem.Click += new System.EventHandler(this.clearListToolStripMenuItem_Click);
-            this.toggleAllItemsCompletedToolStripMenuItem.Click += new System.EventHandler(this.toggleAllItemsCompletedToolStripMenuItem_Click);
-            this.markAllItemsIncompleteToolStripMenuItem.Click += new System.EventHandler(this.markAllItemsIncompleteToolStripMenuItem_Click);
-            this.toggleItemStateToolStripMenuItem.Click += new System.EventHandler(this.toggleItemStateToolStripMenuItem_Click);
-            this.moveCurrentItemUpToolStripMenuItem.Click += new System.EventHandler(this.moveCurrentItemUpToolStripMenuItem_Click);
-            this.moveCurrentItemDownToolStripMenuItem.Click += new System.EventHandler(this.moveCurrentItemDownToolStripMenuItem_Click);
-            this.addNewItemToolStripMenuItem.Click += new System.EventHandler(this.addNewItemToolStripMenuItem_Click);
-            this.addNewChildItemToolStripMenuItem1.Click += new System.EventHandler(this.addNewChildItemToolStripMenuItem1_Click);
-            this.editCurrentItemToolStripMenuItem.Click += new System.EventHandler(this.editCurrentItemToolStripMenuItem_Click);
-            this.deleteCurrentItemToolStripMenuItem1.Click += new System.EventHandler(this.deleteCurrentItemToolStripMenuItem1_Click);
-            this.toggleToolStripMenuItem.Click += new System.EventHandler(this.toggleToolStripMenuItem_Click);
-            this.toggleExpandAllItemsToolStripMenuItem.Click += new System.EventHandler(this.toggleExpandAllItemsToolStripMenuItem_Click);
-            this.unselectCurrentSelectedItemToolStripMenuItem.Click += new System.EventHandler(this.unselectCurrentSelectedItemToolStripMenuItem_Click);
-            this.aboutToolStripMenuItem.Click += new System.EventHandler(this.aboutToolStripMenuItem_Click);
-            this.reportBugToolStripMenuItem.Click += new System.EventHandler(this.reportBugToolStripMenuItem_Click);
-            this.checkForUpdatesToolStripMenuItem.Click += new System.EventHandler(this.checkForUpdatesToolStripMenuItem_Click);
-            this.todolist_lst.AfterCheck += new System.Windows.Forms.TreeViewEventHandler(this.itemChecked_AfterCheck);
-            this.copyCurrentItemToolStripMenuItem.Click += new System.EventHandler(this.copyCurrentItemToolStripMenuItem_Click);
-            this.copyCurrentItemToolStripMenuItem1.Click += new System.EventHandler(this.copyCurrentItemToolStripMenuItem1_Click);
+            this.addItemToolStripMenuItem.Click += new EventHandler(this.addItemToolStripMenuItem_Click);
+            this.addNewChildItemMainStrip.Click += new EventHandler(this.addNewChildItemMainStrip_Click);
+            this.editCurrentItemMainStrip.Click += new EventHandler(this.editCurrentItemMainStrip_Click);
+            this.deleteCurrentItemToolStripMenuItem.Click += new EventHandler(this.deleteCurrentItemToolStripMenuItem_Click);
+            this.moveItemUpMainStrip.Click += new EventHandler(this.moveItemUpMainStrip_Click);
+            this.moveItemDownMainStrip.Click += new EventHandler(this.moveItemDownMainStrip_Click);
+            this.toggleExpandAllItemsToolStripMenuItem1.Click += new EventHandler(this.toggleExpandAllItemsToolStripMenuItem1_Click);
+            this.unselectCurrentItemToolStripMenuItem.Click += new EventHandler(this.unselectCurrentItemToolStripMenuItem_Click);
+            this.newToolStripMenuItem.Click += new EventHandler(this.newToolStripMenuItem_Click);
+            this.openListToolStripMenuItem.Click += new EventHandler(this.openListToolStripMenuItem_Click);
+            this.openListInCurrentWindowToolStripMenuItem.Click += new EventHandler(this.openListInCurrentWindowToolStripMenuItem_Click);
+            this.saveListToolStripMenuItem.Click += new EventHandler(this.saveListToolStripMenuItem_Click);
+            this.saveListAsToolStripMenuItem.Click += new EventHandler(this.saveListAsToolStripMenuItem_Click);
+            this.enableAutoSaveToolStripMenuItem.Click += new EventHandler(this.enableAutoSaveToolStripMenuItem_Click);
+            this.closeListToolStripMenuItem.Click += new EventHandler(this.closeListToolStripMenuItem_Click); ;
+            this.clearListToolStripMenuItem.Click += new EventHandler(this.clearListToolStripMenuItem_Click);
+            this.toggleAllItemsCompletedToolStripMenuItem.Click += new EventHandler(this.toggleAllItemsCompletedToolStripMenuItem_Click);
+            this.markAllItemsIncompleteToolStripMenuItem.Click += new EventHandler(this.markAllItemsIncompleteToolStripMenuItem_Click);
+            this.toggleItemStateToolStripMenuItem.Click += new EventHandler(this.toggleItemStateToolStripMenuItem_Click);
+            this.moveCurrentItemUpToolStripMenuItem.Click += new EventHandler(this.moveCurrentItemUpToolStripMenuItem_Click);
+            this.moveCurrentItemDownToolStripMenuItem.Click += new EventHandler(this.moveCurrentItemDownToolStripMenuItem_Click);
+            this.addNewItemToolStripMenuItem.Click += new EventHandler(this.addNewItemToolStripMenuItem_Click);
+            this.addNewChildItemToolStripMenuItem1.Click += new EventHandler(this.addNewChildItemToolStripMenuItem1_Click);
+            this.editCurrentItemToolStripMenuItem.Click += new EventHandler(this.editCurrentItemToolStripMenuItem_Click);
+            this.deleteCurrentItemToolStripMenuItem1.Click += new EventHandler(this.deleteCurrentItemToolStripMenuItem1_Click);
+            this.toggleToolStripMenuItem.Click += new EventHandler(this.toggleToolStripMenuItem_Click);
+            this.toggleExpandAllItemsToolStripMenuItem.Click += new EventHandler(this.toggleExpandAllItemsToolStripMenuItem_Click);
+            this.unselectCurrentSelectedItemToolStripMenuItem.Click += new EventHandler(this.unselectCurrentSelectedItemToolStripMenuItem_Click);
+            this.aboutToolStripMenuItem.Click += new EventHandler(this.aboutToolStripMenuItem_Click);
+            this.reportBugToolStripMenuItem.Click += new EventHandler(this.reportBugToolStripMenuItem_Click);
+            this.checkForUpdatesToolStripMenuItem.Click += new EventHandler(this.checkForUpdatesToolStripMenuItem_Click);
+            this.todolist_lst.AfterCheck += new TreeViewEventHandler(this.itemChecked_AfterCheck);
+            this.copyCurrentItemToolStripMenuItem.Click += new EventHandler(this.copyCurrentItemToolStripMenuItem_Click);
+            this.copyCurrentItemToolStripMenuItem1.Click += new EventHandler(this.copyCurrentItemToolStripMenuItem1_Click);
+            this.addChildItemToolStripMenuItem.Click += new EventHandler(this.addChildItemToolStripMenuItem_Click);
+            this.copyItemToolStripMenuItem.Click += new EventHandler(this.copyItemToolStripMenuItem_Click);
+            this.editItemToolStripMenuItem.Click += new EventHandler(this.editItemToolStripMenuItem_Click);
+            this.deleteItemToolStripMenuItem.Click += new EventHandler(this.deleteItemToolStripMenuItem_Click);
+            this.moveItemUpToolStripMenuItem.Click += new EventHandler(this.moveItemUpToolStripMenuItem_Click);
+            this.moveItemDownToolStripMenuItem.Click += new EventHandler(this.moveItemDownToolStripMenuItem_Click);
 
             this.inputText_txt.KeyUp += InputText_txtOnKeyUp;
             this.todolist_lst.AfterCheck += itemChecked_AfterCheck;
             this.todolist_lst.AfterSelect += Todolist_lstOnAfterSelect;
+            this.todolist_lst.MouseClick += Todolist_lstOnMouseClick;
 
             // fonts
             _baseFont = todolist_lst.Font;
             _checkedFont = new Font(todolist_lst.Font, FontStyle.Strikeout);
+        }
+
+        private void Todolist_lstOnMouseClick(object sender, MouseEventArgs e)
+        {
+            if (e.Button == MouseButtons.Right)
+            {
+                var selectedNode = todolist_lst.GetNodeAt(e.Location);
+                if (selectedNode != todolist_lst.SelectedNode)
+                {
+                    todolist_lst.SelectedNode = selectedNode;
+                }
+            }
         }
 
         private void Todolist_lstOnAfterSelect(object sender, TreeViewEventArgs e)
@@ -161,7 +180,6 @@ namespace ToDoList
                     }
                     currentSelectionStats_txt.Text = $"{totalItems} child items for selected node, {completedPercent}% Completed ({completedItemCount}/{totalItems})";
                 }
-
             }
             else
             {
@@ -271,7 +289,6 @@ namespace ToDoList
                 checkedNodes.Add(node);
             }
 
-
             for (var i = 0; i < oldNode.Nodes.Count; i++)
             {
                 node.Nodes.Add(CopyNode(oldNode.Nodes[i], out var tmp));
@@ -352,7 +369,7 @@ namespace ToDoList
             }
             else
             {
-                // TODO when I upgrade save file versions :) 
+                // TODO when I upgrade save file versions :)
             }
 
             _countDirty.MarkChecked();
@@ -866,6 +883,36 @@ namespace ToDoList
         private void copyCurrentItemToolStripMenuItem1_Click(object sender, EventArgs e)
         {
             copyCurrentItemToolStripMenuItem_Click(sender, e);
+        }
+
+        private void addChildItemToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            addNewChildItemToolStripMenuItem1_Click(sender, e);
+        }
+
+        private void copyItemToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            copyCurrentItemToolStripMenuItem1_Click(sender, e);
+        }
+
+        private void editItemToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            editCurrentItemToolStripMenuItem_Click(sender, e);
+        }
+
+        private void deleteItemToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            deleteCurrentItemToolStripMenuItem1_Click(sender, e);
+        }
+
+        private void moveItemUpToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            moveItemUpMainStrip_Click(sender, e);
+        }
+
+        private void moveItemDownToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            moveItemDownMainStrip_Click(sender, e);
         }
     }
 }
