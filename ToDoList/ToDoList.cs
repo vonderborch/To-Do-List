@@ -95,10 +95,23 @@ namespace ToDoList
             this.inputText_txt.KeyUp += InputText_txtOnKeyUp;
             this.todolist_lst.AfterCheck += itemChecked_AfterCheck;
             this.todolist_lst.AfterSelect += Todolist_lstOnAfterSelect;
+            this.todolist_lst.MouseClick += Todolist_lstOnMouseClick;
 
             // fonts
             _baseFont = todolist_lst.Font;
             _checkedFont = new Font(todolist_lst.Font, FontStyle.Strikeout);
+        }
+
+        private void Todolist_lstOnMouseClick(object sender, MouseEventArgs e)
+        {
+            if (e.Button == MouseButtons.Right)
+            {
+                var selectedNode = todolist_lst.GetNodeAt(e.Location);
+                if (selectedNode != todolist_lst.SelectedNode)
+                {
+                    todolist_lst.SelectedNode = selectedNode;
+                }
+            }
         }
 
         private void Todolist_lstOnAfterSelect(object sender, TreeViewEventArgs e)
