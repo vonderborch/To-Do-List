@@ -14,6 +14,8 @@
 
         public static string NewVersionPage = "https://github.com/vonderborch/To-Do-List/releases";
 
-        public static int SaveFileVersion = 2;
+        public static int SaveFileVersion = 3;
+
+        public static int MinimumFontSize = 4;
     }
 }

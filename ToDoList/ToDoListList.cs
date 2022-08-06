@@ -1,25 +1,32 @@
-﻿namespace ToDoList
+﻿using System.Drawing;
+
+namespace ToDoList
 {
     public class ToDoListList
     {
-        public string Name;
-
         public bool AutoSave;
 
-        public bool WindowOnTop;
+        public FontStyle CheckedFontStyle = FontStyle.Strikeout;
 
         public bool ExpandAll;
 
-        public int SaveFileVersion = Constants.SaveFileVersion;
+        public int FontSize = 10;
+
+        public FontStyle FontStyle = FontStyle.Regular;
 
         public string ItemsJson;
+        public string Name;
+
+        public int SaveFileVersion = Constants.SaveFileVersion;
+
+        public bool WindowOnTop;
 
         public ToDoListList(string name = "")
         {
-            Name = name;
-            AutoSave = false;
-            WindowOnTop = false;
-            ExpandAll = true;
+            this.Name = name;
+            this.AutoSave = false;
+            this.WindowOnTop = false;
+            this.ExpandAll = true;
         }
     }
 }

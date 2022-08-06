@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Diagnostics;
 using System.Drawing;
 using System.IO;
@@ -14,29 +15,31 @@ using Newtonsoft.Json;
 
 using SIL.FieldWorks.Common.Controls;
 
+using Velentr.Collections.Helpers;
 using Velentr.Math;
-using Velentr.Miscellaneous;
 
 namespace ToDoList
 {
     public partial class ToDoList : Form
     {
+        private readonly Font _baseFont;
         private readonly Guard _countDirty = new Guard();
         private readonly Guard _firstLoad = new Guard();
         private readonly Guard _openDialog = new Guard();
         private readonly Guard _save = new Guard();
-        private Font _baseFont;
         private Font _checkedFont;
 
         private string _filePath = "";
         private ToDoListList _list;
         private TreeNode _nodeBeingCopied;
+        private Font _unCheckedFont;
 
         public ToDoList()
         {
             InitializeComponent();
             ExtraInitialization();
-            RefreshAndSave();
+            this._baseFont = this.todolist_lst.Font;
+            RefreshAndSave(true);
         }
 
         public ToDoList(string file)
@@ -44,15 +47,16 @@ namespace ToDoList
             InitializeComponent();
             ExtraInitialization();
             this._filePath = file;
+            this._baseFont = this.todolist_lst.Font;
             Open(file);
-            RefreshAndSave();
+            RefreshAndSave(true);
         }
 
         public void ExtraInitialization()
         {
             // basics
             this._list = new ToDoListList();
-            this._countDirty.MarkChecked();
+            var _ = this._countDirty.CheckSet;
 
             //// events
 
@@ -107,10 +111,12 @@ namespace ToDoList
             // Duplicate Current Item to Top of Parent Node
             this.duplicateToTop_btn.Click += DuplicateCurrentItemToTopOfParent;
             this.duplicateItemToTop_btn.Click += DuplicateCurrentItemToTopOfParent;
+            this.duplicateToTopToolStripMenuItem.Click += DuplicateCurrentItemToTopOfParent;
 
             // Duplicate Current Item to Bottom of Parent Node
             this.duplicateToBottomMenuItem.Click += DuplicateCurrentItemToBottomOfParent;
             this.duplicateToBottomContextMenuItem.Click += DuplicateCurrentItemToBottomOfParent;
+            this.duplicateToBottomToolStripMenuItem.Click += DuplicateCurrentItemToBottomOfParent;
 
             // Move Item to Top
             this.moveItemToTop_btn.Click += MoveItemTop;
@@ -129,8 +135,8 @@ namespace ToDoList
 
             // Move Item to Bottom
             this.moveItemToBottomToolStripMenuItem.Click += MoveItemBottom;
-            this.toBottom_btn.Click += MoveItemTop;
-            this.currentItemToTop_btn.Click += MoveItemTop;
+            this.toBottom_btn.Click += MoveItemBottom;
+            this.currentItemToTop_btn.Click += MoveItemBottom;
 
             // Deselect Current Item
             this.unselectCurrentItemToolStripMenuItem.Click += DeselectCurrentItem;
@@ -185,16 +191,123 @@ namespace ToDoList
             // Check for Updates
             this.checkForUpdatesToolStripMenuItem.Click += CheckForUpdates;
 
+            // Font Shared
+            this.increaseFontSize.Click += IncreaseSize;
+            this.decreaseFontSize.Click += DecreaseSize;
+            this.currentFontSize.Click += currentFontSize_Click;
+
+            // Regular Font
+            this.toggleBold.Click += ToggleFontBold;
+            this.toggleItalic.Click += ToggleFontItalic;
+            this.toggleStrikethrough.Click += ToggleFontStrikethrough;
+            this.toggleUnderline.Click += ToggleFontUnderline;
+
+            // Checked Font
+            this.toggleBoldChecked.Click += ToggleCheckedFontBold;
+            this.toggleItalicChecked.Click += ToggleCheckedFontItalic;
+            this.toggleStrikethroughChecked.Click += ToggleCheckedFontStrikethrough;
+            this.toggleUnderlineChecked.Click += ToggleCheckedFontUnderline;
+
             // List Utility Functions
             this.todolist_lst.AfterCheck += itemChecked_AfterCheck;
             this.inputText_txt.KeyUp += InputText_txtOnKeyUp;
             this.todolist_lst.AfterCheck += itemChecked_AfterCheck;
             this.todolist_lst.AfterSelect += Todolist_lstOnAfterSelect;
             this.todolist_lst.MouseClick += Todolist_lstOnMouseClick;
+        }
 
-            // fonts
-            this._baseFont = this.todolist_lst.Font;
-            this._checkedFont = new Font(this.todolist_lst.Font, FontStyle.Strikeout);
+        private void ChangeFontSize(int amount)
+        {
+            var actualAmount = MathHelpers.Clamp(amount, Constants.MinimumFontSize);
+            if (actualAmount != this._list.FontSize)
+            {
+                this._list.FontSize = actualAmount;
+                RefreshAndSave(true);
+            }
+        }
+
+        private void ToggleStyle(FontStyle style, bool isCheckedFont)
+        {
+            if (isCheckedFont)
+            {
+                if (this._list.CheckedFontStyle.HasFlag(style))
+                {
+                    this._list.CheckedFontStyle &= ~style;
+                }
+                else
+                {
+                    this._list.CheckedFontStyle |= style;
+                }
+            }
+            else
+            {
+                if (this._list.FontStyle.HasFlag(style))
+                {
+                    this._list.FontStyle &= ~style;
+                }
+                else
+                {
+                    this._list.FontStyle |= style;
+                }
+            }
+        }
+
+        public void ToggleFontBold(object sender, EventArgs e)
+        {
+            ToggleStyle(FontStyle.Bold, false);
+            RefreshAndSave(true);
+        }
+
+        public void ToggleFontItalic(object sender, EventArgs e)
+        {
+            ToggleStyle(FontStyle.Italic, false);
+            RefreshAndSave(true);
+        }
+
+        public void ToggleFontStrikethrough(object sender, EventArgs e)
+        {
+            ToggleStyle(FontStyle.Strikeout, false);
+            RefreshAndSave(true);
+        }
+
+        public void ToggleCheckedFontBold(object sender, EventArgs e)
+        {
+            ToggleStyle(FontStyle.Bold, true);
+            RefreshAndSave(true);
+        }
+
+        public void ToggleCheckedFontItalic(object sender, EventArgs e)
+        {
+            ToggleStyle(FontStyle.Italic, true);
+            RefreshAndSave(true);
+        }
+
+        public void ToggleCheckedFontStrikethrough(object sender, EventArgs e)
+        {
+            ToggleStyle(FontStyle.Strikeout, true);
+            RefreshAndSave(true);
+        }
+
+        public void ToggleFontUnderline(object sender, EventArgs e)
+        {
+            ToggleStyle(FontStyle.Underline, true);
+            RefreshAndSave(true);
+        }
+
+        public void ToggleCheckedFontUnderline(object sender, EventArgs e)
+        {
+            ToggleStyle(FontStyle.Underline, true);
+            RefreshAndSave(true);
+        }
+
+        private void IncreaseSize(object sender, EventArgs e)
+        {
+            ChangeFontSize(this._list.FontSize + 1);
+        }
+
+        private void DecreaseSize(object sender, EventArgs e)
+        {
+            ChangeFontSize(this._list.FontSize - 1);
         }
 
         private void Todolist_lstOnMouseClick(object sender, MouseEventArgs e)
@@ -219,8 +332,52 @@ namespace ToDoList
             Process.Start(Assembly.GetEntryAssembly().Location, file);
         }
 
-        public void RefreshAndSave()
+        public void ConfigureFonts(bool updateFonts = false)
         {
+            if (updateFonts)
+            {
+                // Regular Item Font
+                this._unCheckedFont = new Font(this._baseFont.FontFamily, this._list.FontSize, this._list.FontStyle);
+
+                // Checked Item Font
+                this._checkedFont = new Font(this._baseFont.FontFamily, this._list.FontSize, this._list.CheckedFontStyle);
+
+                this.todolist_lst.Font = this._unCheckedFont;
+                foreach (TreeNode node in this.todolist_lst.Nodes)
+                {
+                    SetNodeFonts(node);
+                }
+
+                this.todolist_lst.Refresh();
+            }
+
+            // Update UI Elements
+            this.currentFontSize.Text = $"Size: {this._list.FontSize}";
+            this.toggleBold.Checked = this._list.FontStyle.HasFlag(FontStyle.Bold);
+            this.toggleItalic.Checked = this._list.FontStyle.HasFlag(FontStyle.Italic);
+            this.toggleStrikethrough.Checked = this._list.FontStyle.HasFlag(FontStyle.Strikeout);
+            this.toggleUnderline.Checked = this._list.FontStyle.HasFlag(FontStyle.Underline);
+
+            this.toggleBoldChecked.Checked = this._list.CheckedFontStyle.HasFlag(FontStyle.Bold);
+            this.toggleItalicChecked.Checked = this._list.CheckedFontStyle.HasFlag(FontStyle.Italic);
+            this.toggleStrikethroughChecked.Checked = this._list.CheckedFontStyle.HasFlag(FontStyle.Strikeout);
+            this.toggleUnderlineChecked.Checked = this._list.CheckedFontStyle.HasFlag(FontStyle.Underline);
+        }
+
+        public void SetNodeFonts(TreeNode node)
+        {
+            node.NodeFont = node.Checked ? this._checkedFont : this._unCheckedFont;
+            foreach (TreeNode n in node.Nodes)
+            {
+                SetNodeFonts(n);
+            }
+        }
+
+        public void RefreshAndSave(bool updateFonts = false)
+        {
+            // Update Fonts
+            ConfigureFonts(updateFonts);
+
             // Save
             if (this._list.AutoSave && this._save.Check && !this._firstLoad.Check && (!string.IsNullOrWhiteSpace(this._list.Name) || this.todolist_lst.Nodes.Count > 0))
             {
@@ -373,7 +530,7 @@ namespace ToDoList
         {
             checkedNodes = new List<TreeNode>();
 
-            var node = new TreeNode(oldNode.Text) {Checked = oldNode.Checked, NodeFont = oldNode.Checked ? this._checkedFont : this._baseFont};
+            var node = new TreeNode(oldNode.Text) {Checked = oldNode.Checked, NodeFont = oldNode.Checked ? this._checkedFont : this._unCheckedFont};
 
             if (node.Checked)
             {
@@ -391,7 +548,7 @@ namespace ToDoList
 
         public void ChangeItemState(TreeNode node, bool? newState)
         {
-            this._firstLoad.MarkChecked();
+            var _ = this._firstLoad.CheckSet;
             node.Checked = newState ?? !node.Checked;
             if (node.Nodes.Count > 0)
             {
@@ -400,12 +557,12 @@ namespace ToDoList
                     ChangeItemState(node.Nodes[i], newState);
                 }
 
-                node.NodeFont = this.todolist_lst.GetChecked(node) == TriStateTreeView.CheckState.Checked ? this._checkedFont : this._baseFont;
+                node.NodeFont = this.todolist_lst.GetChecked(node) == TriStateTreeView.CheckState.Checked ? this._checkedFont : this._unCheckedFont;
             }
             else
             {
                 this.todolist_lst.SetChecked(node, node.Checked ? TriStateTreeView.CheckState.Checked : TriStateTreeView.CheckState.Unchecked);
-                node.NodeFont = node.Checked ? this._checkedFont : this._baseFont;
+                node.NodeFont = node.Checked ? this._checkedFont : this._unCheckedFont;
             }
 
             this._firstLoad.Reset();
@@ -414,7 +571,7 @@ namespace ToDoList
         private string GetNewFileName()
         {
             this.ActiveControl = null;
-            this._openDialog.MarkChecked();
+            var _ = this._openDialog.CheckSet;
             var saveFileName = new SaveFileDialog();
             saveFileName.Filter = Constants.SupportedFileTypes;
             saveFileName.ShowDialog();
@@ -452,21 +609,23 @@ namespace ToDoList
 
         public void Open(string file)
         {
-            this._firstLoad.MarkChecked();
+            var _ = this._firstLoad.CheckSet;
             var input = File.ReadAllText(file);
             var list = JsonConvert.DeserializeObject<ToDoListList>(input);
-            if (list.SaveFileVersion == Constants.SaveFileVersion)
+            if (list.SaveFileVersion > 1)
             {
                 this._filePath = file;
                 this._list = list;
                 DeserializeTreeView(this._list.ItemsJson);
             }
 
-            this._countDirty.MarkChecked();
-            RefreshAndSave();
+            var __ = this._countDirty.CheckSet;
+            RefreshAndSave(true);
             this.todolist_lst.ExpandAll();
             this._list.ExpandAll = true;
             this._firstLoad.Reset();
+            this.todolist_lst.SelectedNode = this.todolist_lst.Nodes[0];
+            DeselectCurrentItem(this, EventArgs.Empty);
         }
 
         public string SerializeTreeView()
@@ -559,7 +718,7 @@ namespace ToDoList
         private void OpenList(object sender, EventArgs e)
         {
             this.ActiveControl = null;
-            this._openDialog.MarkChecked();
+            var _ = this._openDialog.CheckSet;
             var openDialog = new OpenFileDialog {Filter = Constants.SupportedFileTypes, Multiselect = true};
             openDialog.ShowDialog();
             this._openDialog.Reset();
@@ -652,7 +811,7 @@ namespace ToDoList
         private void ClearList(object sender, EventArgs e)
         {
             this.todolist_lst.Nodes.Clear();
-            this._save.MarkChecked();
+            var _ = this._save.CheckSet;
             RefreshAndSave();
         }
 
@@ -663,7 +822,7 @@ namespace ToDoList
                 ChangeItemState(this.todolist_lst.Nodes[i], true);
             }
 
-            this._countDirty.MarkChecked();
+            var _ = this._countDirty.CheckSet;
             RefreshAndSave();
         }
 
@@ -674,7 +833,7 @@ namespace ToDoList
                 ChangeItemState(this.todolist_lst.Nodes[i], false);
             }
 
-            this._countDirty.MarkChecked();
+            var _ = this._countDirty.CheckSet;
             RefreshAndSave();
         }
 
@@ -685,7 +844,7 @@ namespace ToDoList
                 ChangeItemState(this.todolist_lst.Nodes[i], null);
             }
 
-            this._countDirty.MarkChecked();
+            var _ = this._countDirty.CheckSet;
             RefreshAndSave();
         }
 
@@ -698,7 +857,7 @@ namespace ToDoList
         private void OpenAboutInfo(object sender, EventArgs e)
         {
             this.ActiveControl = null;
-            this._openDialog.MarkChecked();
+            var _ = this._openDialog.CheckSet;
             var about = new AboutBox();
             about.ShowDialog();
             this._openDialog.Reset();
@@ -713,7 +872,7 @@ namespace ToDoList
             catch
             {
                 this.ActiveControl = null;
-                this._openDialog.MarkChecked();
+                var _ = this._openDialog.CheckSet;
                 Interaction.MsgBox($"Please go to {Constants.IssueAndFeatureRequestPage} to file a bug or request a new feature!");
                 this._openDialog.Reset();
             }
@@ -775,15 +934,24 @@ namespace ToDoList
             if (this.todolist_lst.SelectedNode != null)
             {
                 var currentPositionNode = this.todolist_lst.SelectedNode;
-                var currentIndex = currentPositionNode.Index;
                 var nodes = currentPositionNode.Parent == null ? this.todolist_lst.Nodes : currentPositionNode.Parent.Nodes;
+                nodes.Remove(currentPositionNode);
+                nodes.Insert(0, currentPositionNode);
+                this.todolist_lst.SelectedNode = currentPositionNode;
 
-                if (currentIndex != 0)
-                {
-                    SwapItems(currentIndex, 0, nodes);
-                    this._save.MarkChecked();
-                    RefreshAndSave();
-                }
+                RefreshAndSave();
+            }
+        }
+
+        private void MoveItemBottom(object sender, EventArgs e)
+        {
+            if (this.todolist_lst.SelectedNode != null)
+            {
+                var currentPositionNode = this.todolist_lst.SelectedNode;
+                var nodes = currentPositionNode.Parent == null ? this.todolist_lst.Nodes : currentPositionNode.Parent.Nodes;
+                nodes.Remove(currentPositionNode);
+                nodes.Add(currentPositionNode);
+                this.todolist_lst.SelectedNode = currentPositionNode;
             }
         }
 
@@ -799,7 +967,7 @@ namespace ToDoList
                 if (currentIndex != nextIndex)
                 {
                     SwapItems(currentIndex, nextIndex, nodes);
-                    this._save.MarkChecked();
+                    var _ = this._save.CheckSet;
                     RefreshAndSave();
                 }
             }
@@ -817,25 +985,7 @@ namespace ToDoList
                 if (currentIndex != nextIndex)
                 {
                     SwapItems(nextIndex, currentIndex, nodes);
-                    this._save.MarkChecked();
-                    RefreshAndSave();
-                }
-            }
-        }
-
-        private void MoveItemBottom(object sender, EventArgs e)
-        {
-            if (this.todolist_lst.SelectedNode != null)
-            {
-                var currentPositionNode = this.todolist_lst.SelectedNode;
-                var currentIndex = currentPositionNode.Index;
-                var nodes = currentPositionNode.Parent == null ? this.todolist_lst.Nodes : currentPositionNode.Parent.Nodes;
-                var nextIndex = nodes.Count - 1;
-
-                if (currentIndex != nextIndex)
-                {
-                    SwapItems(nextIndex, currentIndex, nodes);
-                    this._save.MarkChecked();
+                    var _ = this._save.CheckSet;
                     RefreshAndSave();
                 }
             }
@@ -848,8 +998,8 @@ namespace ToDoList
                 var newNode = CreateNode(newItem, false);
                 this.todolist_lst.Nodes.Add(newNode);
 
-                this._countDirty.MarkChecked();
-                this._save.MarkChecked();
+                var _ = this._countDirty.CheckSet;
+                var __ = this._save.CheckSet;
                 RefreshAndSave();
             }
         }
@@ -865,8 +1015,8 @@ namespace ToDoList
                     this.todolist_lst.SelectedNode.ExpandAll();
                 }
 
-                this._countDirty.MarkChecked();
-                this._save.MarkChecked();
+                var _ = this._countDirty.CheckSet;
+                var __ = this._save.CheckSet;
                 RefreshAndSave();
             }
         }
@@ -877,7 +1027,7 @@ namespace ToDoList
             {
                 this.todolist_lst.SelectedNode.Text = newItem;
 
-                this._save.MarkChecked();
+                var _ = this._save.CheckSet;
                 RefreshAndSave();
             }
         }
@@ -888,8 +1038,8 @@ namespace ToDoList
             {
                 this.todolist_lst.Nodes.Remove(this.todolist_lst.SelectedNode);
 
-                this._countDirty.MarkChecked();
-                this._save.MarkChecked();
+                var _ = this._countDirty.CheckSet;
+                var __ = this._save.CheckSet;
                 RefreshAndSave();
             }
         }
@@ -909,14 +1059,14 @@ namespace ToDoList
                 else if (isChecked == TriStateTreeView.CheckState.Unchecked && e.Node.Checked)
                 {
                     e.Node.Checked = false;
-                    e.Node.NodeFont = this._baseFont;
+                    e.Node.NodeFont = this._unCheckedFont;
                     update = true;
                 }
 
                 if (update)
                 {
-                    this._countDirty.MarkChecked();
-                    this._save.MarkChecked();
+                    var _ = this._countDirty.CheckSet;
+                    var __ = this._save.CheckSet;
                     RefreshAndSave();
                 }
             }
@@ -951,17 +1101,16 @@ namespace ToDoList
             {
                 var newNode = CopyNode(this.todolist_lst.SelectedNode, out var checkedNodes);
                 newNode.Text = newItem;
-                var nodes = this.todolist_lst.SelectedNode.Parent == null ? this.todolist_lst.Nodes : this.todolist_lst.SelectedNode.Parent.Nodes;
-                nodes.Add(newNode);
+                var nodes = GetNodesAtSelection();
+                nodes.Insert(0, newNode);
 
                 for (var i = 0; i < checkedNodes.Count; i++)
                 {
                     this.todolist_lst.SetChecked(checkedNodes[i], TriStateTreeView.CheckState.Checked);
                 }
 
-                SwapItems(nodes.Count - 1, 0, nodes);
-                this._countDirty.MarkChecked();
-                this._save.MarkChecked();
+                var _ = this._countDirty.CheckSet;
+                var __ = this._save.CheckSet;
                 RefreshAndSave();
             }
         }
@@ -972,7 +1121,7 @@ namespace ToDoList
             {
                 var newNode = CopyNode(this.todolist_lst.SelectedNode, out var checkedNodes);
                 newNode.Text = newItem;
-                var nodes = this.todolist_lst.SelectedNode.Parent == null ? this.todolist_lst.Nodes : this.todolist_lst.SelectedNode.Parent.Nodes;
+                var nodes = GetNodesAtSelection();
                 nodes.Add(newNode);
 
                 for (var i = 0; i < checkedNodes.Count; i++)
@@ -980,8 +1129,8 @@ namespace ToDoList
                     this.todolist_lst.SetChecked(checkedNodes[i], TriStateTreeView.CheckState.Checked);
                 }
 
-                this._countDirty.MarkChecked();
-                this._save.MarkChecked();
+                var _ = this._countDirty.CheckSet;
+                var __ = this._save.CheckSet;
                 RefreshAndSave();
             }
         }
@@ -998,28 +1147,17 @@ namespace ToDoList
         {
             if (this.todolist_lst.SelectedNode != null && this._nodeBeingCopied != null)
             {
-                var newNode = CopyNode(this.todolist_lst.SelectedNode, out var checkedNodes);
-                var nodes = this.todolist_lst.SelectedNode.Parent == null ? this.todolist_lst.Nodes : this.todolist_lst.SelectedNode.Parent.Nodes;
-                nodes.Add(newNode);
+                var newNode = CopyNode(this._nodeBeingCopied, out var checkedNodes);
+                var nodes = GetNodesAtSelection();
+                nodes.Insert(this.todolist_lst.SelectedNode.Index, newNode);
 
                 for (var i = 0; i < checkedNodes.Count; i++)
                 {
                     this.todolist_lst.SetChecked(checkedNodes[i], TriStateTreeView.CheckState.Checked);
                 }
 
-                var currentPositionNode = this.todolist_lst.SelectedNode;
-                var currentIndex = currentPositionNode.Index;
-                var newNodeIndex = newNode.Index;
-
-                var nextIndex = MathHelpers.Clamp(currentPositionNode.Index - 1, 0, nodes.Count - 1);
-
-                if (currentIndex != nextIndex && currentIndex != newNodeIndex)
-                {
-                    SwapItems(nextIndex, newNodeIndex, nodes);
-                }
-
-                this._countDirty.MarkChecked();
-                this._save.MarkChecked();
+                var _ = this._countDirty.CheckSet;
+                var __ = this._save.CheckSet;
                 RefreshAndSave();
             }
         }
@@ -1028,28 +1166,18 @@ namespace ToDoList
         {
             if (this.todolist_lst.SelectedNode != null && this._nodeBeingCopied != null)
             {
-                var newNode = CopyNode(this.todolist_lst.SelectedNode, out var checkedNodes);
-                var nodes = this.todolist_lst.SelectedNode.Parent == null ? this.todolist_lst.Nodes : this.todolist_lst.SelectedNode.Parent.Nodes;
-                nodes.Add(newNode);
+                var newNode = CopyNode(this._nodeBeingCopied, out var checkedNodes);
+                var nodes = GetNodesAtSelection();
+
+                nodes.Insert(this.todolist_lst.SelectedNode.Index + 1, newNode);
 
                 for (var i = 0; i < checkedNodes.Count; i++)
                 {
                     this.todolist_lst.SetChecked(checkedNodes[i], TriStateTreeView.CheckState.Checked);
                 }
 
-                var currentPositionNode = this.todolist_lst.SelectedNode;
-                var currentIndex = currentPositionNode.Index;
-                var newNodeIndex = newNode.Index;
-
-                var nextIndex = MathHelpers.Clamp(currentPositionNode.Index + 1, 0, nodes.Count - 1);
-
-                if (currentIndex != nextIndex && currentIndex != newNodeIndex)
-                {
-                    SwapItems(nextIndex, newNodeIndex, nodes);
-                }
-
-                this._countDirty.MarkChecked();
-                this._save.MarkChecked();
+                var _ = this._countDirty.CheckSet;
+                var __ = this._save.CheckSet;
                 RefreshAndSave();
             }
         }
@@ -1058,28 +1186,32 @@ namespace ToDoList
         {
             if (this.todolist_lst.SelectedNode != null && this._nodeBeingCopied != null)
             {
-                var newNode = CopyNode(this.todolist_lst.SelectedNode, out var checkedNodes);
-                var nodes = this.todolist_lst.SelectedNode.Parent == null ? this.todolist_lst.Nodes : this.todolist_lst.SelectedNode.Parent.Nodes;
-                nodes.Add(newNode);
+                var newNode = CopyNode(this._nodeBeingCopied, out var checkedNodes);
+                var nodes = GetNodesAtSelection();
+                nodes.Insert(0, newNode);
 
                 for (var i = 0; i < checkedNodes.Count; i++)
                 {
                     this.todolist_lst.SetChecked(checkedNodes[i], TriStateTreeView.CheckState.Checked);
                 }
 
-                SwapItems(nodes.Count - 1, 0, nodes);
-                this._countDirty.MarkChecked();
-                this._save.MarkChecked();
+                var _ = this._countDirty.CheckSet;
+                var __ = this._save.CheckSet;
                 RefreshAndSave();
             }
+        }
+
+        public TreeNodeCollection GetNodesAtSelection()
+        {
+            return this.todolist_lst.SelectedNode.Parent == null ? this.todolist_lst.Nodes : this.todolist_lst.SelectedNode.Parent.Nodes;
         }
 
         private void PasteAtBottom(object sender, EventArgs e)
         {
             if (this.todolist_lst.SelectedNode != null && this._nodeBeingCopied != null)
             {
-                var newNode = CopyNode(this.todolist_lst.SelectedNode, out var checkedNodes);
-                var nodes = this.todolist_lst.SelectedNode.Parent == null ? this.todolist_lst.Nodes : this.todolist_lst.SelectedNode.Parent.Nodes;
+                var newNode = CopyNode(this._nodeBeingCopied, out var checkedNodes);
+                var nodes = GetNodesAtSelection();
                 nodes.Add(newNode);
 
                 for (var i = 0; i < checkedNodes.Count; i++)
@@ -1087,12 +1219,23 @@ namespace ToDoList
                     this.todolist_lst.SetChecked(checkedNodes[i], TriStateTreeView.CheckState.Checked);
                 }
 
-                this._countDirty.MarkChecked();
-                this._save.MarkChecked();
+                var _ = this._countDirty.CheckSet;
+                var __ = this._save.CheckSet;
                 RefreshAndSave();
             }
         }
 
-        private void Paste(TreeNode node, int index) { }
+        private void contextMenu_Opening(object sender, CancelEventArgs e) { }
+
+        private void currentFontSize_Click(object sender, EventArgs e)
+        {
+            if (GetInput("New Font Size?", "Font Size", this._list.FontSize.ToString(), out var newSizeRaw))
+            {
+                if (int.TryParse(newSizeRaw, out var newSize))
+                {
+                    ChangeFontSize(newSize);
+                }
+            }
+        }
     }
 }
