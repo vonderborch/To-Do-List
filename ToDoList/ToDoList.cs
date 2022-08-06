@@ -80,11 +80,13 @@ namespace ToDoList
             // Duplicate Current Item to Top of Parent Node
 
             // Duplicate Current Item to Bottom of Parent Node
-            this.copyCurrentItemToolStripMenuItem.Click += DuplicateCurrentItemToBottomOfParent;
             this.copyCurrentItemToolStripMenuItem1.Click += DuplicateCurrentItemToBottomOfParent;
             this.copyItemToolStripMenuItem.Click += DuplicateCurrentItemToBottomOfParent;
 
             // Move Item to Top
+            this.moveItemToTop_btn.Click += MoveItemTop;
+            this.toTop_btn.Click += MoveItemTop;
+            this.currentItemToTop_btn.Click += MoveItemTop;
 
             // Move Item Up
             this.moveItemUpMainStrip.Click += MoveItemUp;
@@ -97,6 +99,9 @@ namespace ToDoList
             this.moveItemDownToolStripMenuItem.Click += MoveItemDown;
 
             // Move Item to Bottom
+            this.moveItemToBottomToolStripMenuItem.Click += MoveItemBottom;
+            this.toBottom_btn.Click += MoveItemTop;
+            this.currentItemToTop_btn.Click += MoveItemTop;
 
             // Deselect Current Item
             this.unselectCurrentItemToolStripMenuItem.Click += DeselectCurrentItem;
@@ -736,6 +741,23 @@ namespace ToDoList
             RefreshAndSave();
         }
 
+        public void MoveItemTop(object sender, EventArgs e)
+        {
+            if (this.todolist_lst.SelectedNode != null)
+            {
+                var currentPositionNode = this.todolist_lst.SelectedNode;
+                var currentIndex = currentPositionNode.Index;
+                var nodes = currentPositionNode.Parent == null ? this.todolist_lst.Nodes : currentPositionNode.Parent.Nodes;
+
+                if (currentIndex != 0)
+                {
+                    SwapItems(currentIndex, 0, nodes);
+                    this._save.MarkChecked();
+                    RefreshAndSave();
+                }
+            }
+        }
+
         private void MoveItemUp(object sender, EventArgs e)
         {
             if (this.todolist_lst.SelectedNode != null)
@@ -762,6 +784,24 @@ namespace ToDoList
                 var currentIndex = currentPositionNode.Index;
                 var nodes = currentPositionNode.Parent == null ? this.todolist_lst.Nodes : currentPositionNode.Parent.Nodes;
                 var nextIndex = MathHelpers.Clamp(currentPositionNode.Index + 1, 0, nodes.Count - 1);
+
+                if (currentIndex != nextIndex)
+                {
+                    SwapItems(nextIndex, currentIndex, nodes);
+                    this._save.MarkChecked();
+                    RefreshAndSave();
+                }
+            }
+        }
+
+        private void MoveItemBottom(object sender, EventArgs e)
+        {
+            if (this.todolist_lst.SelectedNode != null)
+            {
+                var currentPositionNode = this.todolist_lst.SelectedNode;
+                var currentIndex = currentPositionNode.Index;
+                var nodes = currentPositionNode.Parent == null ? this.todolist_lst.Nodes : currentPositionNode.Parent.Nodes;
+                var nextIndex = nodes.Count - 1;
 
                 if (currentIndex != nextIndex)
                 {

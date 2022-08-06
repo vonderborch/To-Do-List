@@ -38,7 +38,6 @@ namespace ToDoList
             this.listName_txt = new System.Windows.Forms.ToolStripStatusLabel();
             this.totalItems_txt = new System.Windows.Forms.ToolStripStatusLabel();
             this.currentSelectionStats_txt = new System.Windows.Forms.ToolStripStatusLabel();
-            this.todolist_lst = new SIL.FieldWorks.Common.Controls.TriStateTreeView();
             this.contextMenu = new System.Windows.Forms.ContextMenuStrip(this.components);
             this.addChildItemToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.copyItemToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
@@ -91,9 +90,15 @@ namespace ToDoList
             this.deleteCurrentItemToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.moveItemUpMainStrip = new System.Windows.Forms.ToolStripMenuItem();
             this.moveItemDownMainStrip = new System.Windows.Forms.ToolStripMenuItem();
-            this.copyCurrentItemToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.unselectCurrentItemToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.toggleExpandAllItemsToolStripMenuItem1 = new System.Windows.Forms.ToolStripMenuItem();
+            this.todolist_lst = new SIL.FieldWorks.Common.Controls.TriStateTreeView();
+            this.toBottom_btn = new System.Windows.Forms.ToolStripMenuItem();
+            this.toTop_btn = new System.Windows.Forms.ToolStripMenuItem();
+            this.currentItemToTop_btn = new System.Windows.Forms.ToolStripMenuItem();
+            this.currentItemToBottom_btn = new System.Windows.Forms.ToolStripMenuItem();
+            this.moveItemToTop_btn = new System.Windows.Forms.ToolStripMenuItem();
+            this.moveItemToBottomToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.toolStripContainer1.BottomToolStripPanel.SuspendLayout();
             this.toolStripContainer1.ContentPanel.SuspendLayout();
             this.toolStripContainer1.TopToolStripPanel.SuspendLayout();
@@ -159,18 +164,6 @@ namespace ToDoList
             this.currentSelectionStats_txt.Size = new System.Drawing.Size(45, 20);
             this.currentSelectionStats_txt.Text = "0 items";
             // 
-            // todolist_lst
-            // 
-            this.todolist_lst.ContextMenuStrip = this.contextMenu;
-            this.todolist_lst.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.todolist_lst.ImageIndex = 1;
-            this.todolist_lst.Location = new System.Drawing.Point(0, 0);
-            this.todolist_lst.Name = "todolist_lst";
-            this.todolist_lst.SelectedImageIndex = 1;
-            this.todolist_lst.ShowRootLines = false;
-            this.todolist_lst.Size = new System.Drawing.Size(1271, 702);
-            this.todolist_lst.TabIndex = 2;
-            // 
             // contextMenu
             // 
             this.contextMenu.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
@@ -178,45 +171,47 @@ namespace ToDoList
             this.copyItemToolStripMenuItem,
             this.editItemToolStripMenuItem,
             this.deleteItemToolStripMenuItem,
+            this.moveItemToTop_btn,
             this.moveItemUpToolStripMenuItem,
-            this.moveItemDownToolStripMenuItem});
+            this.moveItemDownToolStripMenuItem,
+            this.moveItemToBottomToolStripMenuItem});
             this.contextMenu.Name = "contextMenu";
-            this.contextMenu.Size = new System.Drawing.Size(181, 158);
+            this.contextMenu.Size = new System.Drawing.Size(189, 180);
             // 
             // addChildItemToolStripMenuItem
             // 
             this.addChildItemToolStripMenuItem.Name = "addChildItemToolStripMenuItem";
-            this.addChildItemToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
+            this.addChildItemToolStripMenuItem.Size = new System.Drawing.Size(188, 22);
             this.addChildItemToolStripMenuItem.Text = "Add Child Item";
             // 
             // copyItemToolStripMenuItem
             // 
             this.copyItemToolStripMenuItem.Name = "copyItemToolStripMenuItem";
-            this.copyItemToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
+            this.copyItemToolStripMenuItem.Size = new System.Drawing.Size(188, 22);
             this.copyItemToolStripMenuItem.Text = "Copy Item";
             // 
             // editItemToolStripMenuItem
             // 
             this.editItemToolStripMenuItem.Name = "editItemToolStripMenuItem";
-            this.editItemToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
+            this.editItemToolStripMenuItem.Size = new System.Drawing.Size(188, 22);
             this.editItemToolStripMenuItem.Text = "Edit Item";
             // 
             // deleteItemToolStripMenuItem
             // 
             this.deleteItemToolStripMenuItem.Name = "deleteItemToolStripMenuItem";
-            this.deleteItemToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
+            this.deleteItemToolStripMenuItem.Size = new System.Drawing.Size(188, 22);
             this.deleteItemToolStripMenuItem.Text = "Delete Item";
             // 
             // moveItemUpToolStripMenuItem
             // 
             this.moveItemUpToolStripMenuItem.Name = "moveItemUpToolStripMenuItem";
-            this.moveItemUpToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
+            this.moveItemUpToolStripMenuItem.Size = new System.Drawing.Size(188, 22);
             this.moveItemUpToolStripMenuItem.Text = "Move Item Up";
             // 
             // moveItemDownToolStripMenuItem
             // 
             this.moveItemDownToolStripMenuItem.Name = "moveItemDownToolStripMenuItem";
-            this.moveItemDownToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
+            this.moveItemDownToolStripMenuItem.Size = new System.Drawing.Size(188, 22);
             this.moveItemDownToolStripMenuItem.Text = "Move Item Down";
             // 
             // menuStrip4
@@ -310,8 +305,10 @@ namespace ToDoList
             this.markAllItemsIncompleteToolStripMenuItem,
             this.toggleItemStateToolStripMenuItem,
             this.toolStripSeparator7,
+            this.currentItemToTop_btn,
             this.moveCurrentItemUpToolStripMenuItem,
             this.moveCurrentItemDownToolStripMenuItem,
+            this.currentItemToBottom_btn,
             this.toolStripSeparator8,
             this.addNewItemToolStripMenuItem,
             this.addNewChildItemToolStripMenuItem1,
@@ -325,82 +322,82 @@ namespace ToDoList
             // clearListToolStripMenuItem
             // 
             this.clearListToolStripMenuItem.Name = "clearListToolStripMenuItem";
-            this.clearListToolStripMenuItem.Size = new System.Drawing.Size(213, 22);
+            this.clearListToolStripMenuItem.Size = new System.Drawing.Size(231, 22);
             this.clearListToolStripMenuItem.Text = "Clear List";
             // 
             // toolStripSeparator6
             // 
             this.toolStripSeparator6.Name = "toolStripSeparator6";
-            this.toolStripSeparator6.Size = new System.Drawing.Size(210, 6);
+            this.toolStripSeparator6.Size = new System.Drawing.Size(228, 6);
             // 
             // toggleAllItemsCompletedToolStripMenuItem
             // 
             this.toggleAllItemsCompletedToolStripMenuItem.Name = "toggleAllItemsCompletedToolStripMenuItem";
-            this.toggleAllItemsCompletedToolStripMenuItem.Size = new System.Drawing.Size(213, 22);
+            this.toggleAllItemsCompletedToolStripMenuItem.Size = new System.Drawing.Size(231, 22);
             this.toggleAllItemsCompletedToolStripMenuItem.Text = "Mark All Items Completed";
             // 
             // markAllItemsIncompleteToolStripMenuItem
             // 
             this.markAllItemsIncompleteToolStripMenuItem.Name = "markAllItemsIncompleteToolStripMenuItem";
-            this.markAllItemsIncompleteToolStripMenuItem.Size = new System.Drawing.Size(213, 22);
+            this.markAllItemsIncompleteToolStripMenuItem.Size = new System.Drawing.Size(231, 22);
             this.markAllItemsIncompleteToolStripMenuItem.Text = "Mark All Items Incomplete";
             // 
             // toggleItemStateToolStripMenuItem
             // 
             this.toggleItemStateToolStripMenuItem.Name = "toggleItemStateToolStripMenuItem";
-            this.toggleItemStateToolStripMenuItem.Size = new System.Drawing.Size(213, 22);
+            this.toggleItemStateToolStripMenuItem.Size = new System.Drawing.Size(231, 22);
             this.toggleItemStateToolStripMenuItem.Text = "Toggle All Items State";
             // 
             // toolStripSeparator7
             // 
             this.toolStripSeparator7.Name = "toolStripSeparator7";
-            this.toolStripSeparator7.Size = new System.Drawing.Size(210, 6);
+            this.toolStripSeparator7.Size = new System.Drawing.Size(228, 6);
             // 
             // moveCurrentItemUpToolStripMenuItem
             // 
             this.moveCurrentItemUpToolStripMenuItem.Name = "moveCurrentItemUpToolStripMenuItem";
-            this.moveCurrentItemUpToolStripMenuItem.Size = new System.Drawing.Size(213, 22);
+            this.moveCurrentItemUpToolStripMenuItem.Size = new System.Drawing.Size(231, 22);
             this.moveCurrentItemUpToolStripMenuItem.Text = "Move Current Item Up";
             // 
             // moveCurrentItemDownToolStripMenuItem
             // 
             this.moveCurrentItemDownToolStripMenuItem.Name = "moveCurrentItemDownToolStripMenuItem";
-            this.moveCurrentItemDownToolStripMenuItem.Size = new System.Drawing.Size(213, 22);
+            this.moveCurrentItemDownToolStripMenuItem.Size = new System.Drawing.Size(231, 22);
             this.moveCurrentItemDownToolStripMenuItem.Text = "Move Current Item Down";
             // 
             // toolStripSeparator8
             // 
             this.toolStripSeparator8.Name = "toolStripSeparator8";
-            this.toolStripSeparator8.Size = new System.Drawing.Size(210, 6);
+            this.toolStripSeparator8.Size = new System.Drawing.Size(228, 6);
             // 
             // addNewItemToolStripMenuItem
             // 
             this.addNewItemToolStripMenuItem.Name = "addNewItemToolStripMenuItem";
-            this.addNewItemToolStripMenuItem.Size = new System.Drawing.Size(213, 22);
+            this.addNewItemToolStripMenuItem.Size = new System.Drawing.Size(231, 22);
             this.addNewItemToolStripMenuItem.Text = "Add New Item";
             // 
             // addNewChildItemToolStripMenuItem1
             // 
             this.addNewChildItemToolStripMenuItem1.Name = "addNewChildItemToolStripMenuItem1";
-            this.addNewChildItemToolStripMenuItem1.Size = new System.Drawing.Size(213, 22);
+            this.addNewChildItemToolStripMenuItem1.Size = new System.Drawing.Size(231, 22);
             this.addNewChildItemToolStripMenuItem1.Text = "Add New Child Item";
             // 
             // editCurrentItemToolStripMenuItem
             // 
             this.editCurrentItemToolStripMenuItem.Name = "editCurrentItemToolStripMenuItem";
-            this.editCurrentItemToolStripMenuItem.Size = new System.Drawing.Size(213, 22);
+            this.editCurrentItemToolStripMenuItem.Size = new System.Drawing.Size(231, 22);
             this.editCurrentItemToolStripMenuItem.Text = "Edit Current Item";
             // 
             // deleteCurrentItemToolStripMenuItem1
             // 
             this.deleteCurrentItemToolStripMenuItem1.Name = "deleteCurrentItemToolStripMenuItem1";
-            this.deleteCurrentItemToolStripMenuItem1.Size = new System.Drawing.Size(213, 22);
+            this.deleteCurrentItemToolStripMenuItem1.Size = new System.Drawing.Size(231, 22);
             this.deleteCurrentItemToolStripMenuItem1.Text = "Delete Current Item";
             // 
             // copyCurrentItemToolStripMenuItem1
             // 
             this.copyCurrentItemToolStripMenuItem1.Name = "copyCurrentItemToolStripMenuItem1";
-            this.copyCurrentItemToolStripMenuItem1.Size = new System.Drawing.Size(213, 22);
+            this.copyCurrentItemToolStripMenuItem1.Size = new System.Drawing.Size(231, 22);
             this.copyCurrentItemToolStripMenuItem1.Text = "Copy Current Item";
             // 
             // viewToolStripMenuItem
@@ -486,9 +483,10 @@ namespace ToDoList
             this.addNewChildItemMainStrip,
             this.editCurrentItemMainStrip,
             this.deleteCurrentItemToolStripMenuItem,
+            this.toTop_btn,
             this.moveItemUpMainStrip,
             this.moveItemDownMainStrip,
-            this.copyCurrentItemToolStripMenuItem,
+            this.toBottom_btn,
             this.unselectCurrentItemToolStripMenuItem,
             this.toggleExpandAllItemsToolStripMenuItem1});
             this.menuStrip3.Location = new System.Drawing.Point(0, 24);
@@ -539,12 +537,6 @@ namespace ToDoList
             this.moveItemDownMainStrip.Size = new System.Drawing.Size(29, 23);
             this.moveItemDownMainStrip.Text = "\\/";
             // 
-            // copyCurrentItemToolStripMenuItem
-            // 
-            this.copyCurrentItemToolStripMenuItem.Name = "copyCurrentItemToolStripMenuItem";
-            this.copyCurrentItemToolStripMenuItem.Size = new System.Drawing.Size(117, 23);
-            this.copyCurrentItemToolStripMenuItem.Text = "Copy Current Item";
-            // 
             // unselectCurrentItemToolStripMenuItem
             // 
             this.unselectCurrentItemToolStripMenuItem.Name = "unselectCurrentItemToolStripMenuItem";
@@ -556,6 +548,54 @@ namespace ToDoList
             this.toggleExpandAllItemsToolStripMenuItem1.Name = "toggleExpandAllItemsToolStripMenuItem1";
             this.toggleExpandAllItemsToolStripMenuItem1.Size = new System.Drawing.Size(145, 23);
             this.toggleExpandAllItemsToolStripMenuItem1.Text = "Toggle Expand All Items";
+            // 
+            // todolist_lst
+            // 
+            this.todolist_lst.ContextMenuStrip = this.contextMenu;
+            this.todolist_lst.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.todolist_lst.ImageIndex = 1;
+            this.todolist_lst.Location = new System.Drawing.Point(0, 0);
+            this.todolist_lst.Name = "todolist_lst";
+            this.todolist_lst.SelectedImageIndex = 1;
+            this.todolist_lst.ShowRootLines = false;
+            this.todolist_lst.Size = new System.Drawing.Size(1271, 702);
+            this.todolist_lst.TabIndex = 2;
+            // 
+            // toBottom_btn
+            // 
+            this.toBottom_btn.Name = "toBottom_btn";
+            this.toBottom_btn.Size = new System.Drawing.Size(39, 23);
+            this.toBottom_btn.Text = "\\/\\/";
+            // 
+            // toTop_btn
+            // 
+            this.toTop_btn.Name = "toTop_btn";
+            this.toTop_btn.Size = new System.Drawing.Size(39, 23);
+            this.toTop_btn.Text = "/\\/\\";
+            // 
+            // currentItemToTop_btn
+            // 
+            this.currentItemToTop_btn.Name = "currentItemToTop_btn";
+            this.currentItemToTop_btn.Size = new System.Drawing.Size(231, 22);
+            this.currentItemToTop_btn.Text = "Move Current Item to Top";
+            // 
+            // currentItemToBottom_btn
+            // 
+            this.currentItemToBottom_btn.Name = "currentItemToBottom_btn";
+            this.currentItemToBottom_btn.Size = new System.Drawing.Size(231, 22);
+            this.currentItemToBottom_btn.Text = "Move Current Item to Bottom";
+            // 
+            // moveItemToTop_btn
+            // 
+            this.moveItemToTop_btn.Name = "moveItemToTop_btn";
+            this.moveItemToTop_btn.Size = new System.Drawing.Size(188, 22);
+            this.moveItemToTop_btn.Text = "Move Item to Top";
+            // 
+            // moveItemToBottomToolStripMenuItem
+            // 
+            this.moveItemToBottomToolStripMenuItem.Name = "moveItemToBottomToolStripMenuItem";
+            this.moveItemToBottomToolStripMenuItem.Size = new System.Drawing.Size(188, 22);
+            this.moveItemToBottomToolStripMenuItem.Text = "Move Item to Bottom";
             // 
             // ToDoList
             // 
@@ -637,7 +677,6 @@ namespace ToDoList
         private ToolStripMenuItem deleteCurrentItemToolStripMenuItem;
         private ToolStripMenuItem moveItemUpMainStrip;
         private ToolStripMenuItem moveItemDownMainStrip;
-        private ToolStripMenuItem copyCurrentItemToolStripMenuItem;
         private ToolStripMenuItem unselectCurrentItemToolStripMenuItem;
         private ToolStripMenuItem toggleExpandAllItemsToolStripMenuItem1;
         private ContextMenuStrip contextMenu;
@@ -647,6 +686,12 @@ namespace ToDoList
         private ToolStripMenuItem deleteItemToolStripMenuItem;
         private ToolStripMenuItem moveItemUpToolStripMenuItem;
         private ToolStripMenuItem moveItemDownToolStripMenuItem;
+        private ToolStripMenuItem moveItemToTop_btn;
+        private ToolStripMenuItem moveItemToBottomToolStripMenuItem;
+        private ToolStripMenuItem currentItemToTop_btn;
+        private ToolStripMenuItem currentItemToBottom_btn;
+        private ToolStripMenuItem toTop_btn;
+        private ToolStripMenuItem toBottom_btn;
     }
 }
 
