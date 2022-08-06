@@ -26,7 +26,6 @@ namespace ToDoList
         private readonly Guard _openDialog = new Guard();
         private readonly Guard _save = new Guard();
         private Font _baseFont;
-
         private Font _checkedFont;
 
         private string _filePath = "";
@@ -75,9 +74,19 @@ namespace ToDoList
             this.deleteCurrentItemToolStripMenuItem1.Click += DeleteCurrentItem;
             this.deleteItemToolStripMenuItem.Click += DeleteCurrentItem;
 
-            // Copy Current Item to Bottom of Parent
+            // Copy Current Item
+
+            // Paste Item to Top
+
+            // Paste Item to Bottom
+
+            // Paste Item Above
+
+            // Paste Item Below
 
             // Duplicate Current Item to Top of Parent Node
+            this.duplicateToTop_btn.Click += DuplicateCurrentItemToTopOfParent;
+            this.duplicateItemToTop_btn.Click += DuplicateCurrentItemToTopOfParent;
 
             // Duplicate Current Item to Bottom of Parent Node
             this.copyCurrentItemToolStripMenuItem1.Click += DuplicateCurrentItemToBottomOfParent;
@@ -914,6 +923,27 @@ namespace ToDoList
         private void DeselectCurrentItem(object sender, EventArgs e)
         {
             this.todolist_lst.SelectedNode = null;
+        }
+
+        public void DuplicateCurrentItemToTopOfParent(object sender, EventArgs e)
+        {
+            if (this.todolist_lst.SelectedNode != null && GetInput("New Item Text", "Copy Item", this.todolist_lst.SelectedNode.Text, out var newItem))
+            {
+                var newNode = CopyNode(this.todolist_lst.SelectedNode, out var checkedNodes);
+                newNode.Text = newItem;
+                var nodes = this.todolist_lst.SelectedNode.Parent == null ? this.todolist_lst.Nodes : this.todolist_lst.SelectedNode.Parent.Nodes;
+                nodes.Add(newNode);
+
+                for (var i = 0; i < checkedNodes.Count; i++)
+                {
+                    this.todolist_lst.SetChecked(checkedNodes[i], TriStateTreeView.CheckState.Checked);
+                }
+
+                SwapItems(nodes.Count - 1, 0, nodes);
+                this._countDirty.MarkChecked();
+                this._save.MarkChecked();
+                RefreshAndSave();
+            }
         }
 
         private void DuplicateCurrentItemToBottomOfParent(object sender, EventArgs e)

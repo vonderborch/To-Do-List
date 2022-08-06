@@ -103,6 +103,8 @@ namespace ToDoList
             this.toolStripSeparator10 = new System.Windows.Forms.ToolStripSeparator();
             this.toolStripSeparator11 = new System.Windows.Forms.ToolStripSeparator();
             this.toolStripSeparator12 = new System.Windows.Forms.ToolStripSeparator();
+            this.duplicateToTop_btn = new System.Windows.Forms.ToolStripMenuItem();
+            this.duplicateItemToTop_btn = new System.Windows.Forms.ToolStripMenuItem();
             this.toolStripContainer1.BottomToolStripPanel.SuspendLayout();
             this.toolStripContainer1.ContentPanel.SuspendLayout();
             this.toolStripContainer1.TopToolStripPanel.SuspendLayout();
@@ -176,6 +178,7 @@ namespace ToDoList
             this.editItemToolStripMenuItem,
             this.deleteItemToolStripMenuItem,
             this.toolStripSeparator11,
+            this.duplicateItemToTop_btn,
             this.copyItemToolStripMenuItem,
             this.toolStripSeparator12,
             this.moveItemToTop_btn,
@@ -183,7 +186,7 @@ namespace ToDoList
             this.moveItemDownToolStripMenuItem,
             this.moveItemToBottomToolStripMenuItem});
             this.contextMenu.Name = "contextMenu";
-            this.contextMenu.Size = new System.Drawing.Size(209, 198);
+            this.contextMenu.Size = new System.Drawing.Size(209, 242);
             // 
             // addChildItemToolStripMenuItem
             // 
@@ -322,6 +325,7 @@ namespace ToDoList
             this.editCurrentItemToolStripMenuItem,
             this.deleteCurrentItemToolStripMenuItem1,
             this.toolStripSeparator5,
+            this.duplicateToTop_btn,
             this.copyCurrentItemToolStripMenuItem1});
             this.editToolStripMenuItem.Name = "editToolStripMenuItem";
             this.editToolStripMenuItem.Size = new System.Drawing.Size(39, 20);
@@ -625,6 +629,18 @@ namespace ToDoList
             this.toolStripSeparator12.Name = "toolStripSeparator12";
             this.toolStripSeparator12.Size = new System.Drawing.Size(205, 6);
             // 
+            // duplicateToTop_btn
+            // 
+            this.duplicateToTop_btn.Name = "duplicateToTop_btn";
+            this.duplicateToTop_btn.Size = new System.Drawing.Size(251, 22);
+            this.duplicateToTop_btn.Text = "Duplicate Current Item to Top";
+            // 
+            // duplicateItemToTop_btn
+            // 
+            this.duplicateItemToTop_btn.Name = "duplicateItemToTop_btn";
+            this.duplicateItemToTop_btn.Size = new System.Drawing.Size(208, 22);
+            this.duplicateItemToTop_btn.Text = "Duplicate Item to Top";
+            // 
             // ToDoList
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -724,6 +740,8 @@ namespace ToDoList
         private ToolStripSeparator toolStripSeparator11;
         private ToolStripSeparator toolStripSeparator12;
         private ToolStripSeparator toolStripSeparator5;
+        private ToolStripMenuItem duplicateItemToTop_btn;
+        private ToolStripMenuItem duplicateToTop_btn;
     }
 }
 
