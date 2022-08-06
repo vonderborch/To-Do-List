@@ -40,7 +40,7 @@ namespace ToDoList
             this.currentSelectionStats_txt = new System.Windows.Forms.ToolStripStatusLabel();
             this.contextMenu = new System.Windows.Forms.ContextMenuStrip(this.components);
             this.addChildItemToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.copyItemToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.duplicateToBottomContextMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.editItemToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.deleteItemToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.moveItemUpToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
@@ -70,7 +70,7 @@ namespace ToDoList
             this.addNewChildItemToolStripMenuItem1 = new System.Windows.Forms.ToolStripMenuItem();
             this.editCurrentItemToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.deleteCurrentItemToolStripMenuItem1 = new System.Windows.Forms.ToolStripMenuItem();
-            this.copyCurrentItemToolStripMenuItem1 = new System.Windows.Forms.ToolStripMenuItem();
+            this.duplicateToBottomMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.viewToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.toggleToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.toolStripSeparator2 = new System.Windows.Forms.ToolStripSeparator();
@@ -105,6 +105,27 @@ namespace ToDoList
             this.toolStripSeparator12 = new System.Windows.Forms.ToolStripSeparator();
             this.duplicateToTop_btn = new System.Windows.Forms.ToolStripMenuItem();
             this.duplicateItemToTop_btn = new System.Windows.Forms.ToolStripMenuItem();
+            this.copyItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.toolStripSeparator13 = new System.Windows.Forms.ToolStripSeparator();
+            this.paste_btn = new System.Windows.Forms.ToolStripMenuItem();
+            this.pasteToTopOfParentToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.pasteAboveToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.pasteBelowToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.pasteToBottomToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.copyCurrentItemToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.toolStripSeparator14 = new System.Windows.Forms.ToolStripSeparator();
+            this.pasteToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.pasteToTopOfParentNodeToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.pasteAboveCurrentItemToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.pasteBelowCurrentItemToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.pasteToBottomOfParentNodeToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.copyToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.pasteToolStripMenuItem1 = new System.Windows.Forms.ToolStripMenuItem();
+            this.pasteToTopToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.pasteAboveToolStripMenuItem1 = new System.Windows.Forms.ToolStripMenuItem();
+            this.pasteBelowToolStripMenuItem1 = new System.Windows.Forms.ToolStripMenuItem();
+            this.pasteToBottomToolStripMenuItem1 = new System.Windows.Forms.ToolStripMenuItem();
+            this.duplicateToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.toolStripContainer1.BottomToolStripPanel.SuspendLayout();
             this.toolStripContainer1.ContentPanel.SuspendLayout();
             this.toolStripContainer1.TopToolStripPanel.SuspendLayout();
@@ -125,11 +146,11 @@ namespace ToDoList
             // toolStripContainer1.ContentPanel
             // 
             this.toolStripContainer1.ContentPanel.Controls.Add(this.todolist_lst);
-            this.toolStripContainer1.ContentPanel.Size = new System.Drawing.Size(1271, 702);
+            this.toolStripContainer1.ContentPanel.Size = new System.Drawing.Size(1279, 702);
             this.toolStripContainer1.Dock = System.Windows.Forms.DockStyle.Fill;
             this.toolStripContainer1.Location = new System.Drawing.Point(0, 0);
             this.toolStripContainer1.Name = "toolStripContainer1";
-            this.toolStripContainer1.Size = new System.Drawing.Size(1271, 778);
+            this.toolStripContainer1.Size = new System.Drawing.Size(1279, 778);
             this.toolStripContainer1.TabIndex = 4;
             this.toolStripContainer1.Text = "toolStripContainer1";
             // 
@@ -179,14 +200,17 @@ namespace ToDoList
             this.deleteItemToolStripMenuItem,
             this.toolStripSeparator11,
             this.duplicateItemToTop_btn,
-            this.copyItemToolStripMenuItem,
+            this.duplicateToBottomContextMenuItem,
+            this.toolStripSeparator13,
+            this.copyItem,
+            this.paste_btn,
             this.toolStripSeparator12,
             this.moveItemToTop_btn,
             this.moveItemUpToolStripMenuItem,
             this.moveItemDownToolStripMenuItem,
             this.moveItemToBottomToolStripMenuItem});
             this.contextMenu.Name = "contextMenu";
-            this.contextMenu.Size = new System.Drawing.Size(209, 242);
+            this.contextMenu.Size = new System.Drawing.Size(209, 270);
             // 
             // addChildItemToolStripMenuItem
             // 
@@ -194,11 +218,11 @@ namespace ToDoList
             this.addChildItemToolStripMenuItem.Size = new System.Drawing.Size(208, 22);
             this.addChildItemToolStripMenuItem.Text = "Add Child Item";
             // 
-            // copyItemToolStripMenuItem
+            // duplicateToBottomContextMenuItem
             // 
-            this.copyItemToolStripMenuItem.Name = "copyItemToolStripMenuItem";
-            this.copyItemToolStripMenuItem.Size = new System.Drawing.Size(208, 22);
-            this.copyItemToolStripMenuItem.Text = "Duplicate Item to Bottom";
+            this.duplicateToBottomContextMenuItem.Name = "duplicateToBottomContextMenuItem";
+            this.duplicateToBottomContextMenuItem.Size = new System.Drawing.Size(208, 22);
+            this.duplicateToBottomContextMenuItem.Text = "Duplicate Item to Bottom";
             // 
             // editItemToolStripMenuItem
             // 
@@ -234,7 +258,7 @@ namespace ToDoList
             this.toolStripMenuItem2});
             this.menuStrip4.Location = new System.Drawing.Point(0, 0);
             this.menuStrip4.Name = "menuStrip4";
-            this.menuStrip4.Size = new System.Drawing.Size(1271, 24);
+            this.menuStrip4.Size = new System.Drawing.Size(1279, 24);
             this.menuStrip4.TabIndex = 1;
             this.menuStrip4.Text = "menuStrip4";
             // 
@@ -326,7 +350,10 @@ namespace ToDoList
             this.deleteCurrentItemToolStripMenuItem1,
             this.toolStripSeparator5,
             this.duplicateToTop_btn,
-            this.copyCurrentItemToolStripMenuItem1});
+            this.duplicateToBottomMenuItem,
+            this.toolStripSeparator14,
+            this.copyCurrentItemToolStripMenuItem,
+            this.pasteToolStripMenuItem});
             this.editToolStripMenuItem.Name = "editToolStripMenuItem";
             this.editToolStripMenuItem.Size = new System.Drawing.Size(39, 20);
             this.editToolStripMenuItem.Text = "Edit";
@@ -406,11 +433,11 @@ namespace ToDoList
             this.deleteCurrentItemToolStripMenuItem1.Size = new System.Drawing.Size(251, 22);
             this.deleteCurrentItemToolStripMenuItem1.Text = "Delete Current Item";
             // 
-            // copyCurrentItemToolStripMenuItem1
+            // duplicateToBottomMenuItem
             // 
-            this.copyCurrentItemToolStripMenuItem1.Name = "copyCurrentItemToolStripMenuItem1";
-            this.copyCurrentItemToolStripMenuItem1.Size = new System.Drawing.Size(251, 22);
-            this.copyCurrentItemToolStripMenuItem1.Text = "Duplicate Current Item to Bottom";
+            this.duplicateToBottomMenuItem.Name = "duplicateToBottomMenuItem";
+            this.duplicateToBottomMenuItem.Size = new System.Drawing.Size(251, 22);
+            this.duplicateToBottomMenuItem.Text = "Duplicate Current Item to Bottom";
             // 
             // viewToolStripMenuItem
             // 
@@ -499,11 +526,14 @@ namespace ToDoList
             this.moveItemUpMainStrip,
             this.moveItemDownMainStrip,
             this.toBottom_btn,
+            this.pasteToolStripMenuItem1,
             this.unselectCurrentItemToolStripMenuItem,
-            this.toggleExpandAllItemsToolStripMenuItem1});
+            this.toggleExpandAllItemsToolStripMenuItem1,
+            this.copyToolStripMenuItem,
+            this.duplicateToolStripMenuItem});
             this.menuStrip3.Location = new System.Drawing.Point(0, 24);
             this.menuStrip3.Name = "menuStrip3";
-            this.menuStrip3.Size = new System.Drawing.Size(1271, 27);
+            this.menuStrip3.Size = new System.Drawing.Size(1279, 27);
             this.menuStrip3.TabIndex = 0;
             this.menuStrip3.Text = "menuStrip3";
             // 
@@ -570,7 +600,7 @@ namespace ToDoList
             this.todolist_lst.Name = "todolist_lst";
             this.todolist_lst.SelectedImageIndex = 1;
             this.todolist_lst.ShowRootLines = false;
-            this.todolist_lst.Size = new System.Drawing.Size(1271, 702);
+            this.todolist_lst.Size = new System.Drawing.Size(1279, 702);
             this.todolist_lst.TabIndex = 2;
             // 
             // toBottom_btn
@@ -641,11 +671,150 @@ namespace ToDoList
             this.duplicateItemToTop_btn.Size = new System.Drawing.Size(208, 22);
             this.duplicateItemToTop_btn.Text = "Duplicate Item to Top";
             // 
+            // copyItem
+            // 
+            this.copyItem.Name = "copyItem";
+            this.copyItem.Size = new System.Drawing.Size(208, 22);
+            this.copyItem.Text = "Copy Item";
+            // 
+            // toolStripSeparator13
+            // 
+            this.toolStripSeparator13.Name = "toolStripSeparator13";
+            this.toolStripSeparator13.Size = new System.Drawing.Size(205, 6);
+            // 
+            // paste_btn
+            // 
+            this.paste_btn.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.pasteToTopOfParentToolStripMenuItem,
+            this.pasteAboveToolStripMenuItem,
+            this.pasteBelowToolStripMenuItem,
+            this.pasteToBottomToolStripMenuItem});
+            this.paste_btn.Name = "paste_btn";
+            this.paste_btn.Size = new System.Drawing.Size(208, 22);
+            this.paste_btn.Text = "Paste";
+            // 
+            // pasteToTopOfParentToolStripMenuItem
+            // 
+            this.pasteToTopOfParentToolStripMenuItem.Name = "pasteToTopOfParentToolStripMenuItem";
+            this.pasteToTopOfParentToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
+            this.pasteToTopOfParentToolStripMenuItem.Text = "Paste to Top";
+            // 
+            // pasteAboveToolStripMenuItem
+            // 
+            this.pasteAboveToolStripMenuItem.Name = "pasteAboveToolStripMenuItem";
+            this.pasteAboveToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
+            this.pasteAboveToolStripMenuItem.Text = "Paste Above";
+            // 
+            // pasteBelowToolStripMenuItem
+            // 
+            this.pasteBelowToolStripMenuItem.Name = "pasteBelowToolStripMenuItem";
+            this.pasteBelowToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
+            this.pasteBelowToolStripMenuItem.Text = "Paste Below";
+            // 
+            // pasteToBottomToolStripMenuItem
+            // 
+            this.pasteToBottomToolStripMenuItem.Name = "pasteToBottomToolStripMenuItem";
+            this.pasteToBottomToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
+            this.pasteToBottomToolStripMenuItem.Text = "Paste to Bottom";
+            // 
+            // copyCurrentItemToolStripMenuItem
+            // 
+            this.copyCurrentItemToolStripMenuItem.Name = "copyCurrentItemToolStripMenuItem";
+            this.copyCurrentItemToolStripMenuItem.Size = new System.Drawing.Size(251, 22);
+            this.copyCurrentItemToolStripMenuItem.Text = "Copy Current Item";
+            // 
+            // toolStripSeparator14
+            // 
+            this.toolStripSeparator14.Name = "toolStripSeparator14";
+            this.toolStripSeparator14.Size = new System.Drawing.Size(248, 6);
+            // 
+            // pasteToolStripMenuItem
+            // 
+            this.pasteToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.pasteToTopOfParentNodeToolStripMenuItem,
+            this.pasteAboveCurrentItemToolStripMenuItem,
+            this.pasteBelowCurrentItemToolStripMenuItem,
+            this.pasteToBottomOfParentNodeToolStripMenuItem});
+            this.pasteToolStripMenuItem.Name = "pasteToolStripMenuItem";
+            this.pasteToolStripMenuItem.Size = new System.Drawing.Size(251, 22);
+            this.pasteToolStripMenuItem.Text = "Paste Item";
+            // 
+            // pasteToTopOfParentNodeToolStripMenuItem
+            // 
+            this.pasteToTopOfParentNodeToolStripMenuItem.Name = "pasteToTopOfParentNodeToolStripMenuItem";
+            this.pasteToTopOfParentNodeToolStripMenuItem.Size = new System.Drawing.Size(237, 22);
+            this.pasteToTopOfParentNodeToolStripMenuItem.Text = "Paste to Top of Parent Item";
+            // 
+            // pasteAboveCurrentItemToolStripMenuItem
+            // 
+            this.pasteAboveCurrentItemToolStripMenuItem.Name = "pasteAboveCurrentItemToolStripMenuItem";
+            this.pasteAboveCurrentItemToolStripMenuItem.Size = new System.Drawing.Size(237, 22);
+            this.pasteAboveCurrentItemToolStripMenuItem.Text = "Paste Above Current Item";
+            // 
+            // pasteBelowCurrentItemToolStripMenuItem
+            // 
+            this.pasteBelowCurrentItemToolStripMenuItem.Name = "pasteBelowCurrentItemToolStripMenuItem";
+            this.pasteBelowCurrentItemToolStripMenuItem.Size = new System.Drawing.Size(237, 22);
+            this.pasteBelowCurrentItemToolStripMenuItem.Text = "Paste Below Current Item";
+            // 
+            // pasteToBottomOfParentNodeToolStripMenuItem
+            // 
+            this.pasteToBottomOfParentNodeToolStripMenuItem.Name = "pasteToBottomOfParentNodeToolStripMenuItem";
+            this.pasteToBottomOfParentNodeToolStripMenuItem.Size = new System.Drawing.Size(237, 22);
+            this.pasteToBottomOfParentNodeToolStripMenuItem.Text = "Paste to Bottom of Parent Item";
+            // 
+            // copyToolStripMenuItem
+            // 
+            this.copyToolStripMenuItem.Name = "copyToolStripMenuItem";
+            this.copyToolStripMenuItem.Size = new System.Drawing.Size(47, 23);
+            this.copyToolStripMenuItem.Text = "Copy";
+            // 
+            // pasteToolStripMenuItem1
+            // 
+            this.pasteToolStripMenuItem1.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.pasteToTopToolStripMenuItem,
+            this.pasteAboveToolStripMenuItem1,
+            this.pasteBelowToolStripMenuItem1,
+            this.pasteToBottomToolStripMenuItem1});
+            this.pasteToolStripMenuItem1.Name = "pasteToolStripMenuItem1";
+            this.pasteToolStripMenuItem1.Size = new System.Drawing.Size(47, 23);
+            this.pasteToolStripMenuItem1.Text = "Paste";
+            // 
+            // pasteToTopToolStripMenuItem
+            // 
+            this.pasteToTopToolStripMenuItem.Name = "pasteToTopToolStripMenuItem";
+            this.pasteToTopToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
+            this.pasteToTopToolStripMenuItem.Text = "Paste to Top";
+            // 
+            // pasteAboveToolStripMenuItem1
+            // 
+            this.pasteAboveToolStripMenuItem1.Name = "pasteAboveToolStripMenuItem1";
+            this.pasteAboveToolStripMenuItem1.Size = new System.Drawing.Size(180, 22);
+            this.pasteAboveToolStripMenuItem1.Text = "Paste Above";
+            // 
+            // pasteBelowToolStripMenuItem1
+            // 
+            this.pasteBelowToolStripMenuItem1.Name = "pasteBelowToolStripMenuItem1";
+            this.pasteBelowToolStripMenuItem1.Size = new System.Drawing.Size(180, 22);
+            this.pasteBelowToolStripMenuItem1.Text = "Paste Below";
+            // 
+            // pasteToBottomToolStripMenuItem1
+            // 
+            this.pasteToBottomToolStripMenuItem1.Name = "pasteToBottomToolStripMenuItem1";
+            this.pasteToBottomToolStripMenuItem1.Size = new System.Drawing.Size(180, 22);
+            this.pasteToBottomToolStripMenuItem1.Text = "Paste to Bottom";
+            // 
+            // duplicateToolStripMenuItem
+            // 
+            this.duplicateToolStripMenuItem.Name = "duplicateToolStripMenuItem";
+            this.duplicateToolStripMenuItem.Size = new System.Drawing.Size(69, 23);
+            this.duplicateToolStripMenuItem.Text = "Duplicate";
+            // 
             // ToDoList
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(1271, 778);
+            this.ClientSize = new System.Drawing.Size(1279, 778);
             this.Controls.Add(this.toolStripContainer1);
             this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
             this.Name = "ToDoList";
@@ -701,7 +870,7 @@ namespace ToDoList
         private ToolStripMenuItem addNewChildItemToolStripMenuItem1;
         private ToolStripMenuItem editCurrentItemToolStripMenuItem;
         private ToolStripMenuItem deleteCurrentItemToolStripMenuItem1;
-        private ToolStripMenuItem copyCurrentItemToolStripMenuItem1;
+        private ToolStripMenuItem duplicateToBottomMenuItem;
         private ToolStripMenuItem viewToolStripMenuItem;
         private ToolStripMenuItem toggleToolStripMenuItem;
         private ToolStripSeparator toolStripSeparator2;
@@ -725,7 +894,7 @@ namespace ToDoList
         private ToolStripMenuItem toggleExpandAllItemsToolStripMenuItem1;
         private ContextMenuStrip contextMenu;
         private ToolStripMenuItem addChildItemToolStripMenuItem;
-        private ToolStripMenuItem copyItemToolStripMenuItem;
+        private ToolStripMenuItem duplicateToBottomContextMenuItem;
         private ToolStripMenuItem editItemToolStripMenuItem;
         private ToolStripMenuItem deleteItemToolStripMenuItem;
         private ToolStripMenuItem moveItemUpToolStripMenuItem;
@@ -742,6 +911,27 @@ namespace ToDoList
         private ToolStripSeparator toolStripSeparator5;
         private ToolStripMenuItem duplicateItemToTop_btn;
         private ToolStripMenuItem duplicateToTop_btn;
+        private ToolStripSeparator toolStripSeparator13;
+        private ToolStripMenuItem copyItem;
+        private ToolStripMenuItem paste_btn;
+        private ToolStripMenuItem pasteToTopOfParentToolStripMenuItem;
+        private ToolStripMenuItem pasteAboveToolStripMenuItem;
+        private ToolStripMenuItem pasteBelowToolStripMenuItem;
+        private ToolStripMenuItem pasteToBottomToolStripMenuItem;
+        private ToolStripSeparator toolStripSeparator14;
+        private ToolStripMenuItem copyCurrentItemToolStripMenuItem;
+        private ToolStripMenuItem pasteToolStripMenuItem;
+        private ToolStripMenuItem pasteToTopOfParentNodeToolStripMenuItem;
+        private ToolStripMenuItem pasteAboveCurrentItemToolStripMenuItem;
+        private ToolStripMenuItem pasteBelowCurrentItemToolStripMenuItem;
+        private ToolStripMenuItem pasteToBottomOfParentNodeToolStripMenuItem;
+        private ToolStripMenuItem copyToolStripMenuItem;
+        private ToolStripMenuItem pasteToolStripMenuItem1;
+        private ToolStripMenuItem pasteToTopToolStripMenuItem;
+        private ToolStripMenuItem pasteAboveToolStripMenuItem1;
+        private ToolStripMenuItem pasteBelowToolStripMenuItem1;
+        private ToolStripMenuItem pasteToBottomToolStripMenuItem1;
+        private ToolStripMenuItem duplicateToolStripMenuItem;
     }
 }
 

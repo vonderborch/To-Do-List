@@ -30,6 +30,7 @@ namespace ToDoList
 
         private string _filePath = "";
         private ToDoListList _list;
+        private TreeNode _nodeBeingCopied;
 
         public ToDoList()
         {
@@ -75,22 +76,41 @@ namespace ToDoList
             this.deleteItemToolStripMenuItem.Click += DeleteCurrentItem;
 
             // Copy Current Item
+            this.copyItem.Click += CopyCurrentItem;
+            this.copyCurrentItemToolStripMenuItem.Click += CopyCurrentItem;
+            this.copyToolStripMenuItem.Click += CopyCurrentItem;
 
             // Paste Item to Top
+            this.pasteToTopOfParentNodeToolStripMenuItem.Click += PasteAtTop;
+            this.pasteToTopToolStripMenuItem.Click += PasteAtTop;
+            this.pasteToTopOfParentToolStripMenuItem.Click += PasteAtTop;
 
             // Paste Item to Bottom
+            this.pasteToBottomOfParentNodeToolStripMenuItem.Click += PasteAtBottom;
+            this.pasteToBottomToolStripMenuItem.Click += PasteAtBottom;
+            this.pasteToBottomToolStripMenuItem1.Click += PasteAtBottom;
 
             // Paste Item Above
+            this.pasteAboveCurrentItemToolStripMenuItem.Click += PasteAbove;
+            this.pasteAboveToolStripMenuItem.Click += PasteAbove;
+            this.pasteAboveToolStripMenuItem1.Click += PasteAbove;
 
             // Paste Item Below
+            this.pasteBelowCurrentItemToolStripMenuItem.Click += PasteBelow;
+            this.pasteBelowToolStripMenuItem.Click += PasteBelow;
+            this.pasteBelowToolStripMenuItem1.Click += PasteBelow;
+
+            this.pasteToolStripMenuItem.Click += PasteBelow;
+            this.pasteToolStripMenuItem1.Click += PasteBelow;
+            this.paste_btn.Click += PasteBelow;
 
             // Duplicate Current Item to Top of Parent Node
             this.duplicateToTop_btn.Click += DuplicateCurrentItemToTopOfParent;
             this.duplicateItemToTop_btn.Click += DuplicateCurrentItemToTopOfParent;
 
             // Duplicate Current Item to Bottom of Parent Node
-            this.copyCurrentItemToolStripMenuItem1.Click += DuplicateCurrentItemToBottomOfParent;
-            this.copyItemToolStripMenuItem.Click += DuplicateCurrentItemToBottomOfParent;
+            this.duplicateToBottomMenuItem.Click += DuplicateCurrentItemToBottomOfParent;
+            this.duplicateToBottomContextMenuItem.Click += DuplicateCurrentItemToBottomOfParent;
 
             // Move Item to Top
             this.moveItemToTop_btn.Click += MoveItemTop;
@@ -965,5 +985,114 @@ namespace ToDoList
                 RefreshAndSave();
             }
         }
+
+        private void CopyCurrentItem(object sender, EventArgs e)
+        {
+            if (this.todolist_lst.SelectedNode != null)
+            {
+                this._nodeBeingCopied = this.todolist_lst.SelectedNode;
+            }
+        }
+
+        private void PasteAbove(object sender, EventArgs e)
+        {
+            if (this.todolist_lst.SelectedNode != null && this._nodeBeingCopied != null)
+            {
+                var newNode = CopyNode(this.todolist_lst.SelectedNode, out var checkedNodes);
+                var nodes = this.todolist_lst.SelectedNode.Parent == null ? this.todolist_lst.Nodes : this.todolist_lst.SelectedNode.Parent.Nodes;
+                nodes.Add(newNode);
+
+                for (var i = 0; i < checkedNodes.Count; i++)
+                {
+                    this.todolist_lst.SetChecked(checkedNodes[i], TriStateTreeView.CheckState.Checked);
+                }
+
+                var currentPositionNode = this.todolist_lst.SelectedNode;
+                var currentIndex = currentPositionNode.Index;
+                var newNodeIndex = newNode.Index;
+
+                var nextIndex = MathHelpers.Clamp(currentPositionNode.Index - 1, 0, nodes.Count - 1);
+
+                if (currentIndex != nextIndex && currentIndex != newNodeIndex)
+                {
+                    SwapItems(nextIndex, newNodeIndex, nodes);
+                }
+
+                this._countDirty.MarkChecked();
+                this._save.MarkChecked();
+                RefreshAndSave();
+            }
+        }
+
+        private void PasteBelow(object sender, EventArgs e)
+        {
+            if (this.todolist_lst.SelectedNode != null && this._nodeBeingCopied != null)
+            {
+                var newNode = CopyNode(this.todolist_lst.SelectedNode, out var checkedNodes);
+                var nodes = this.todolist_lst.SelectedNode.Parent == null ? this.todolist_lst.Nodes : this.todolist_lst.SelectedNode.Parent.Nodes;
+                nodes.Add(newNode);
+
+                for (var i = 0; i < checkedNodes.Count; i++)
+                {
+                    this.todolist_lst.SetChecked(checkedNodes[i], TriStateTreeView.CheckState.Checked);
+                }
+
+                var currentPositionNode = this.todolist_lst.SelectedNode;
+                var currentIndex = currentPositionNode.Index;
+                var newNodeIndex = newNode.Index;
+
+                var nextIndex = MathHelpers.Clamp(currentPositionNode.Index + 1, 0, nodes.Count - 1);
+
+                if (currentIndex != nextIndex && currentIndex != newNodeIndex)
+                {
+                    SwapItems(nextIndex, newNodeIndex, nodes);
+                }
+
+                this._countDirty.MarkChecked();
+                this._save.MarkChecked();
+                RefreshAndSave();
+            }
+        }
+
+        private void PasteAtTop(object sender, EventArgs e)
+        {
+            if (this.todolist_lst.SelectedNode != null && this._nodeBeingCopied != null)
+            {
+                var newNode = CopyNode(this.todolist_lst.SelectedNode, out var checkedNodes);
+                var nodes = this.todolist_lst.SelectedNode.Parent == null ? this.todolist_lst.Nodes : this.todolist_lst.SelectedNode.Parent.Nodes;
+                nodes.Add(newNode);
+
+                for (var i = 0; i < checkedNodes.Count; i++)
+                {
+                    this.todolist_lst.SetChecked(checkedNodes[i], TriStateTreeView.CheckState.Checked);
+                }
+
+                SwapItems(nodes.Count - 1, 0, nodes);
+                this._countDirty.MarkChecked();
+                this._save.MarkChecked();
+                RefreshAndSave();
+            }
+        }
+
+        private void PasteAtBottom(object sender, EventArgs e)
+        {
+            if (this.todolist_lst.SelectedNode != null && this._nodeBeingCopied != null)
+            {
+                var newNode = CopyNode(this.todolist_lst.SelectedNode, out var checkedNodes);
+                var nodes = this.todolist_lst.SelectedNode.Parent == null ? this.todolist_lst.Nodes : this.todolist_lst.SelectedNode.Parent.Nodes;
+                nodes.Add(newNode);
+
+                for (var i = 0; i < checkedNodes.Count; i++)
+                {
+                    this.todolist_lst.SetChecked(checkedNodes[i], TriStateTreeView.CheckState.Checked);
+                }
+
+                this._countDirty.MarkChecked();
+                this._save.MarkChecked();
+                RefreshAndSave();
+            }
+        }
+
+        private void Paste(TreeNode node, int index) { }
     }
 }
